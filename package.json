@@ -1,0 +1,42 @@
+{
+  "name": "cosmo_web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "check:env": "node scripts/env-check.mjs",
+    "check:env:prod": "node scripts/env-check.mjs --prod",
+    "check:sigv4": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/sigv4-selftest.mjs",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "node scripts/db-migrate.mjs",
+    "db:migrate:prod": "node scripts/db-migrate.mjs --prod",
+    "db:seed": "node scripts/db-seed.mjs",
+    "db:seed:prod": "node scripts/db-seed.mjs --prod"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.4",
+    "framer-motion": "^13.2.0",
+    "graphql-request": "^7.4.0",
+    "next": "16.3.4",
+    "pg": "^8.23.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.11",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.4",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

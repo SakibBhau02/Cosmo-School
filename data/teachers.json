@@ -1,0 +1,10 @@
+[
+  { "slug": "sharmin-akter", "name": "শারমিন আক্তার", "en": "Sharmin Akter", "roleBn": "প্রধান শিক্ষক (ভারপ্রাপ্ত)", "subject": "ইংরেজি", "exp": "১২ বছর" },
+  { "slug": "mahmudul-hasan", "name": "মাহমুদুল হাসান", "en": "Mahmudul Hasan", "roleBn": "সহকারী প্রধান শিক্ষক", "subject": "গণিত", "exp": "১০ বছর" },
+  { "slug": "nusrat-jahan", "name": "নুসরাত জাহান", "en": "Nusrat Jahan", "roleBn": "প্রি-স্কুল ইনচার্জ", "subject": "শিশু শিক্ষা", "exp": "৮ বছর" },
+  { "slug": "tanvir-ahmed", "name": "তানভীর আহমেদ", "en": "Tanvir Ahmed", "roleBn": "সিনিয়র শিক্ষক", "subject": "বিজ্ঞান", "exp": "৯ বছর" },
+  { "slug": "farhana-rahman", "name": "ফারহানা রহমান", "en": "Farhana Rahman", "roleBn": "সহকারী শিক্ষক", "subject": "বাংলা", "exp": "৬ বছর" },
+  { "slug": "rakibul-islam", "name": "রাকিবুল ইসলাম", "en": "Rakibul Islam", "roleBn": "আইসিটি শিক্ষক", "subject": "তথ্যপ্রযুক্তি", "exp": "৫ বছর" },
+  { "slug": "sumaiya-sultana", "name": "সুমাইয়া সুলতানা", "en": "Sumaiya Sultana", "roleBn": "সহকারী শিক্ষক", "subject": "গণিত", "exp": "৪ বছর" },
+  { "slug": "arif-chowdhury", "name": "আরিফ চৌধুরী", "en": "Arif Chowdhury", "roleBn": "ক্রীড়া শিক্ষক", "subject": "শরীরচর্চা", "exp": "৭ বছর" }
+]

@@ -1,0 +1,529 @@
+{
+  "media": {},
+  "hero": {
+    "youtubeId": "VdFupXS3Mkc",
+    "mode": "slider"
+  },
+  "stats": [
+    {
+      "value": 1200,
+      "suffix": "+",
+      "labelBn": "শিক্ষার্থী",
+      "labelEn": "Students"
+    },
+    {
+      "value": 80,
+      "suffix": "+",
+      "labelBn": "শিক্ষক",
+      "labelEn": "Teachers"
+    },
+    {
+      "value": 12,
+      "suffix": "+",
+      "labelBn": "শ্রেষ্ঠত্বের বছর",
+      "labelEn": "Years of excellence"
+    },
+    {
+      "value": 6,
+      "suffix": "",
+      "labelBn": "ক্লাব",
+      "labelEn": "Clubs"
+    }
+  ],
+  "events": [
+    {
+      "date": "২১ ফেব্রুয়ারি",
+      "titleBn": "আন্তর্জাতিক মাতৃভাষা দিবস",
+      "titleEn": "International Mother Language Day",
+      "kind": "সাংস্কৃতিক"
+    },
+    {
+      "date": "১৪ এপ্রিল",
+      "titleBn": "বাংলা নববর্ষ",
+      "titleEn": "Bengali New Year",
+      "kind": "সাংস্কৃতিক"
+    },
+    {
+      "date": "২৪ জুন – ১০ জুলাই",
+      "titleBn": "অর্ধ-বার্ষিক পরীক্ষা",
+      "titleEn": "Half-Yearly Examination",
+      "kind": "পরীক্ষা"
+    },
+    {
+      "date": "১–১২ জুন",
+      "titleBn": "ঈদ-উল-আজহা ও গ্রীষ্মকালীন ছুটি",
+      "titleEn": "Eid-ul-Adha & Summer Vacation",
+      "kind": "ছুটি"
+    }
+  ],
+  "fees": {
+    "admission": [
+      {
+        "item": "ভর্তি ফর্ম",
+        "amount": "৳৫০০"
+      },
+      {
+        "item": "ভর্তি ফি (এককালীন)",
+        "amount": "৳৮,০০০ – ১২,০০০"
+      },
+      {
+        "item": "জামানত (ফেরতযোগ্য)",
+        "amount": "৳৩,০০০"
+      }
+    ],
+    "monthly": [
+      {
+        "level": "প্রি-স্কুল",
+        "amount": "৳২,৫০০"
+      },
+      {
+        "level": "প্রি-প্রাইমারি",
+        "amount": "৳২,৮০০"
+      },
+      {
+        "level": "প্রাইমারি (১ম–৫ম)",
+        "amount": "৳৩,২০০"
+      },
+      {
+        "level": "সেকেন্ডারি (৬ষ্ঠ–১০ম)",
+        "amount": "৳৩,৮০০"
+      }
+    ],
+    "noteBn": "উপরের ফি ডেমো — চূড়ান্ত ফি ভর্তি অফিস থেকে নিশ্চিত করুন। ২০২৭ সেশনে প্রাথমিক আবেদনে ১০% পর্যন্ত ছাড়।"
+  },
+  "testimonials": [
+    {
+      "name": "রুমানা আফরিন",
+      "meta": "দ্বিতীয় শ্রেণির শিক্ষার্থীর মা",
+      "text": "শিক্ষকরা প্রতিটি বাচ্চাকে আলাদাভাবে চেনেন। হোমওয়ার্কের চাপ নেই, অথচ পড়াশোনায় অনেক এগিয়েছে।"
+    },
+    {
+      "name": "তানজিল আহমেদ",
+      "meta": "পঞ্চম শ্রেণির শিক্ষার্থীর বাবা",
+      "text": "অফিসের পর ডে লং স্কুলটা আমাদের জন্য আশীর্বাদ। প্রতিদিন ছবিসহ আপডেট পাই — নিশ্চিন্তে অফিস করতে পারি।"
+    },
+    {
+      "name": "শারমিন সুলতানা",
+      "meta": "Prep II-এর শিক্ষার্থীর মা",
+      "text": "পিঠা উৎসব, বিজ্ঞান মেলা — মেয়েটা স্কুলে যেতে মুখিয়ে থাকে। ভর্তি সিদ্ধান্তটা সঠিক ছিল।"
+    },
+    {
+      "name": "কামরুল হাসান",
+      "meta": "সপ্তম শ্রেণির শিক্ষার্থীর বাবা",
+      "text": "নোটিশ, রেজাল্ট, ফি — সব তথ্য সময়মতো পাই। অফিসের ব্যবহারও খুব আন্তরিক।"
+    },
+    {
+      "name": "নাজমা বেগম",
+      "meta": "প্রথম শ্রেণির শিক্ষার্থীর মা",
+      "text": "ছেলে আগে স্কুলে যেতে চাইতো না, এখন ছুটির দিনেও স্কুলের কথা বলে। শিক্ষকদের ধন্যবাদ।"
+    },
+    {
+      "name": "ইমরান খান",
+      "meta": "দশম শ্রেণির শিক্ষার্থীর বাবা",
+      "text": "টেস্ট পরীক্ষার প্রস্তুতি বোর্ড পরীক্ষার মতোই গুরুত্ব দিয়ে নেওয়া হয় — ছেলের আত্মবিশ্বাস অনেক বেড়েছে।"
+    }
+  ],
+  "daycarePlans": [
+    {
+      "name": "হাফ ডে",
+      "en": "Half Day",
+      "time": "স্কুল ছুটি – বিকেল ৩টা",
+      "price": "৳৩,০০০/মাস"
+    },
+    {
+      "name": "ফুল ডে",
+      "en": "Full Day",
+      "time": "স্কুল ছুটি – সন্ধ্যা ৬টা",
+      "price": "৳৫,০০০/মাস"
+    },
+    {
+      "name": "ড্রপ-ইন",
+      "en": "Drop-in",
+      "time": "যেকোনো দিন, প্রতিদিন হিসাব",
+      "price": "৳৩০০/দিন"
+    }
+  ],
+  "daylong": {
+    "hero": {
+      "badgeAgeBn": "বয়স: ২–৮ বছর",
+      "badgeAgeEn": "Age: 2–8 years",
+      "nameBn": "কসমো ডে লং স্কুল",
+      "nameEn": "Cosmo Day Long School",
+      "taglineBn": "স্কুল শেষেও নিরাপদ, যত্নশীল দ্বিতীয় ঘর",
+      "taglineEn": "A safe, caring second home after school",
+      "timeBn": "সকাল ৮টা – রাত ৮টা (শনি–বৃহস্পতি)",
+      "timeEn": "8 AM – 8 PM (Sat–Thu)",
+      "seatsBn": "আসন সীমিত",
+      "seatsEn": "Limited seats",
+      "visitBn": "📅 ক্যাম্পাস ভিজিট করুন",
+      "visitEn": "📅 Visit Campus"
+    },
+    "painsHead": {
+      "eyebrowBn": "কর্মজীবী বাবা-মায়ের জন্য",
+      "eyebrowEn": "For working parents",
+      "titleBn": "আপনার ৩টা দুশ্চিন্তার সমাধান",
+      "titleEn": "Solving your 3 big worries"
+    },
+    "pains": [
+      {
+        "e": "⏰",
+        "tBn": "অফিস শেষ ৫টায়, স্কুল ছুটি ২টায়",
+        "tEn": "Office ends at 5, school at 2",
+        "dBn": "মাঝের ৩ ঘণ্টা বাচ্চা কোথায় থাকবে? কসমো ডে লং স্কুলে সন্ধ্যা ৬টা পর্যন্ত নিরাপদে।",
+        "dEn": "Where will your child be for those 3 hours? Safe at Cosmo till 6 PM."
+      },
+      {
+        "e": "📚",
+        "tBn": "রাতে হোমওয়ার্ক যুদ্ধ",
+        "tEn": "Homework battles at night",
+        "dBn": "ক্লান্ত শরীরে পড়ানো নয় — হোমওয়ার্ক ডে লং স্কুলেই শিক্ষকের তত্ত্বাবধানে শেষ।",
+        "dEn": "No late-night tutoring — homework finishes here under teacher supervision."
+      },
+      {
+        "e": "📱",
+        "tBn": "সারাদিন দুশ্চিন্তা",
+        "tEn": "Worry all day long",
+        "dBn": "প্রতিদিন ছবিসহ আপডেট আর ডেইলি ডায়েরি — বাচ্চা কী খেল, কী শিখল সব জানুন।",
+        "dEn": "Daily photo updates and a diary — know what your child ate, played and learned."
+      }
+    ],
+    "routineHead": {
+      "eyebrowBn": "রুটিন",
+      "eyebrowEn": "Routine",
+      "titleBn": "কসমোতে একটা দিন",
+      "titleEn": "A Day at Cosmo",
+      "introBn": "শেখা, সুস্থতা, শৃঙ্খলা ও আনন্দময় বিকাশের জন্য সাজানো সুগঠিত দিন।",
+      "introEn": "A structured day designed for learning, wellbeing, discipline & joyful growth."
+    },
+    "special": [
+      {
+        "kickerBn": "বিশেষ সুবিধা",
+        "kickerEn": "Special Features",
+        "titleBn": "🎪 ক্লাব কার্যক্রম — প্রতি মাসের ৩য় শনিবার",
+        "titleEn": "CLUB ACTIVITIES — EVERY 3rd SATURDAY",
+        "descBn": "প্রতি মাসের তৃতীয় শনিবারে বিশেষভাবে পরিকল্পিত ক্লাব কার্যক্রম — সৃজনশীলতা, নেতৃত্ব, দলগত কাজ ও ব্যক্তিগত আগ্রহ অন্বেষণের সুযোগ।",
+        "descEn": "Every third Saturday of the month features specially planned Club Activities, giving children opportunities to explore creativity, leadership, teamwork and personal interests."
+      },
+      {
+        "kickerBn": "সবার জন্য",
+        "kickerEn": "For Everyone",
+        "titleBn": "🤲 সব ধর্মের প্রতি শ্রদ্ধা",
+        "titleEn": "RESPECT FOR EVERY FAITH",
+        "descBn": "ভিন্ন ধর্মাবলম্বী শিক্ষার্থীদের জন্য সন্ধ্যার প্রার্থনার সুযোগ স্কুলের কর্মসূচি ও শিক্ষার্থীদের চাহিদা অনুযায়ী আলাদাভাবে ও শ্রদ্ধার সাথে আয়োজন করা হয়।",
+        "descEn": "Evening prayer opportunities for students of different faiths are arranged separately and respectfully, according to the school's program and students' needs."
+      }
+    ],
+    "photos": {
+      "titleBn": "ভেতরটা দেখুন",
+      "titleEn": "Take a look inside",
+      "noteBn": "বনশ্রীর নিজস্ব ছবি এলে এখানে বসবে — আপাতত স্কুলের আসল মুহূর্ত",
+      "noteEn": "Banasree's own photos will go here — real school moments for now"
+    },
+    "staff": {
+      "initialBn": "নু",
+      "initialEn": "N",
+      "nameBn": "নুসরাত জাহান",
+      "nameEn": "Nusrat Jahan",
+      "roleBn": "ডে লং স্কুল ইনচার্জ (ডেমো) • ৮ বছরের অভিজ্ঞতা",
+      "roleEn": "Day Long School In-charge (demo) • 8 years of experience",
+      "eyebrowBn": "যার হাতে আপনার শিশু",
+      "eyebrowEn": "In whose hands your child is",
+      "quoteBn": "“বাচ্চারা আমার কাছে অতিথি নয়, পরিবার। প্রতিদিন ডায়েরিতে লিখি — আজ কে কী খেল, কী শিখল, কখন হাসল।”",
+      "quoteEn": "“Children are not guests to me — they are family. Every day I write in the diary — who played what, learned what, smiled when.”",
+      "chips": [
+        {
+          "bn": "শিশু মনোবিজ্ঞান প্রশিক্ষণ",
+          "en": "Child psychology training"
+        },
+        {
+          "bn": "ফার্স্ট-এইড সার্টিফাইড",
+          "en": "First-aid certified"
+        },
+        {
+          "bn": "৮ বছর অভিজ্ঞতা",
+          "en": "8 years of experience"
+        }
+      ]
+    },
+    "quote": {
+      "textBn": "“অফিসের পর ডে লং স্কুলটা আমাদের জন্য আশীর্বাদ। প্রতিদিন ছবিসহ আপডেট পাই — নিশ্চিন্তে অফিস করতে পারি।”",
+      "textEn": "“The day long school after office hours is a blessing for us. Daily photo updates — I work with complete peace of mind.”",
+      "byBn": "তানজিল আহমেদ, অভিভাবক",
+      "byEn": "Tanjil Ahmed, Guardian"
+    },
+    "whyHead": {
+      "eyebrowBn": "কেন কসমো",
+      "eyebrowEn": "Why Cosmo",
+      "titleBn": "কর্মজীবী অভিভাবকরা কেন কসমোকে বেছে নেন",
+      "titleEn": "Why Working Parents Choose Cosmo",
+      "brandBn": "কসমো ডে-লং স্কুলিং",
+      "brandEn": "Cosmo Day-long Schooling",
+      "taglineBn": "শেখা, যত্ন, বিকাশ ও চরিত্র গঠনে ভরা একটি পূর্ণ দিন",
+      "taglineEn": "A full day of learning, care, growth and character building",
+      "introBn": "কসমো স্কুলে শিশুরা সুগঠিত, আনন্দময় ও উদ্দেশ্যমূলক পরিবেশে দিন কাটায় — যেখানে তারা শেখে, খেলে, বিশ্রাম নেয়, ভালো অভ্যাস চর্চা করে এবং শিক্ষকদের তত্ত্বাবধানে বেড়ে ওঠে।",
+      "introEn": "At Cosmo School, children spend their day in a structured, joyful and purposeful environment where they learn, play, rest, practice good habits and grow under the guidance of teachers."
+    },
+    "why": [
+      {
+        "tBn": "কর্মজীবী অভিভাবকদের নিশ্চিন্ত দিন",
+        "tEn": "Worry-Free Days for Working Parents",
+        "dBn": "সন্তানরা নিরাপদ, যত্নশীল ও শিক্ষামূলক পরিবেশে দিন কাটাচ্ছে জেনে অভিভাবকরা পেশাগত দায়িত্বে মন দিতে পারেন। কসমো শেখা, যত্ন ও অর্থপূর্ণ কার্যক্রমকে এক ছাদের নিচে এনেছে।",
+        "dEn": "Parents can focus on their professional responsibilities knowing that their children are spending the day in a safe, caring and educational environment. Cosmo brings learning, care and meaningful activities together under one roof."
+      },
+      {
+        "tBn": "বাসায় হোমওয়ার্কের ঝামেলা নেই",
+        "tEn": "No Homework Hassle at Home",
+        "dBn": "তত্ত্বাবধানে বিকেলের পড়ার সময়েই নির্ধারিত হোমওয়ার্ক ও একাডেমিক অনুশীলন শেষ হয়। শিশুরা পরিবার, বিশ্রাম ও স্বাস্থ্যকর ঘুমের জন্য বেশি সময় নিয়ে বাড়ি ফেরে।",
+        "dEn": "Assigned homework and academic practice are completed during supervised after-school study. Children return home with more time for family, relaxation and healthy sleep."
+      },
+      {
+        "tBn": "আরও ভারসাম্যপূর্ণ, স্ক্রিন-মুক্ত শৈশব",
+        "tEn": "A More Balanced, Device-Free Childhood",
+        "dBn": "স্ক্রিনে দীর্ঘ সময় না কাটিয়ে শিশুরা শেখা, খেলা, সৃজনশীল কাজ, পড়া ও মুখোমুখি মেলামেশায় যুক্ত থাকে। এতে তাদের স্বাস্থ্যকর রুটিন ও অর্থপূর্ণ সামাজিক সম্পর্ক গড়ে ওঠে।",
+        "dEn": "Instead of spending long hours on screens, children engage in learning, sports, creative activities, reading and face-to-face interaction. This helps them develop healthier routines and meaningful social connections."
+      },
+      {
+        "tBn": "সারাদিন শিক্ষকদের তত্ত্বাবধানে",
+        "tEn": "Guided by Teachers Throughout the Day",
+        "dBn": "প্রশিক্ষিত শিক্ষক ও স্কুল স্টাফের তত্ত্বাবধানে শিশুরা স্কুল সময় কাটায়। প্রশ্ন করা, দক্ষতা চর্চা, অন্যদের সাথে মেশা ও স্বাবলম্বী হওয়ার নিয়মিত সুযোগ পায় তারা।",
+        "dEn": "Children spend their school hours under the guidance and supervision of trained teachers and school staff. They have regular opportunities to ask questions, practice skills, interact with others and develop independence."
+      },
+      {
+        "tBn": "একসাথে শেখো, খেলো ও বাড়ো",
+        "tEn": "Learn, Play and Grow Together",
+        "dBn": "দলগত শেখা, দলগত কাজ, খেলা ও সৃজনশীল কার্যক্রমে শিশুদের বন্ধুত্ব গড়ে ওঠে। তারা ভাগ করে নেওয়া, সহযোগিতা, যোগাযোগ শেখে এবং সহপাঠীদের সাথে শেখা উপভোগ করে।",
+        "dEn": "Children build friendships through group learning, teamwork, sports and creative activities. They learn to share, cooperate, communicate and enjoy learning with their peers."
+      },
+      {
+        "tBn": "মেডিটেশন, যোগা, বিশ্রাম ও নামাজ",
+        "tEn": "Meditation, Yoga, Rest & Prayer",
+        "dBn": "দৈনিক রুটিনে মেডিটেশন, যোগা, পর্যাপ্ত বিশ্রাম ও নামাজ অন্তর্ভুক্ত। এই চর্চাগুলো প্রশান্তি, আত্মসচেতনতা, শারীরিক সুস্থতা ও আধ্যাত্মিক মূল্যবোধের প্রতি শ্রদ্ধা বাড়ায়।",
+        "dEn": "Meditation, yoga, appropriate rest and prayer are incorporated into the daily routine. These practices encourage calmness, self-awareness, physical well-being and respect for spiritual values."
+      },
+      {
+        "tBn": "উদ্দেশ্যমূলক শৃঙ্খলাপূর্ণ জীবন",
+        "tEn": "A Disciplined Life with Purpose",
+        "dBn": "নিয়মিত দৈনিক রুটিন শিশুদের সময়নিষ্ঠা, দায়িত্ববোধ, আত্ম-ব্যবস্থাপনা ও সময়ের প্রতি শ্রদ্ধা গড়তে সাহায্য করে। তারা রুটিন মেনে চলতে ও যত্ন নিয়ে দায়িত্ব শেষ করতে শেখে।",
+        "dEn": "A consistent daily routine helps children develop punctuality, responsibility, self-management and respect for time. They learn to follow routines and complete their responsibilities with care."
+      },
+      {
+        "tBn": "ভালো আচরণ ও পরিচ্ছন্নতার চর্চা",
+        "tEn": "Good Manners & Cleanliness in Practice",
+        "dBn": "প্রতিদিনের স্কুলজীবনের অংশ হিসেবে শিশুরা শ্রদ্ধাশীল সম্ভাষণ, ব্যক্তিগত স্বাস্থ্যবিধি, পরিচ্ছন্নতা ও যৌথ স্থানের যত্ন চর্চা করে। ভালো অভ্যাস দৈনিক চর্চায় গড়ে ওঠে — শুধু নিয়ম মুখস্থ করে নয়।",
+        "dEn": "Children practice respectful greetings, personal hygiene, cleanliness and care for shared spaces as part of their everyday school life. Good habits are developed through daily practice — not simply memorized as rules."
+      },
+      {
+        "tBn": "পাঠ্যবইয়ের বাইরে — বাস্তব জীবনের শেখা",
+        "tEn": "Beyond Textbooks — Real-life Learning",
+        "dBn": "পরীক্ষা, পড়া, প্রজেক্ট, ব্যবহারিক কাজ ও সৃজনশীল অন্বেষণে শেখা শ্রেণিকক্ষ ছাড়িয়ে যায়। শিশুদের কৌতূহল, সমস্যা সমাধানের দক্ষতা ও শেখা কাজে লাগানোর আত্মবিশ্বাস গড়ে ওঠে।",
+        "dEn": "Learning goes beyond the classroom through experiments, reading, projects, practical activities and creative exploration. Children develop curiosity, problem-solving skills and the confidence to apply what they learn."
+      },
+      {
+        "tBn": "নিরাপদ, যত্নশীল ও তত্ত্বাবধানপূর্ণ পরিবেশ",
+        "tEn": "Safe, Caring & Supervised Environment",
+        "dBn": "সুগঠিত স্কুল দিন, মনোযোগী প্রাপ্তবয়স্ক তত্ত্বাবধান ও স্পষ্ট রুটিন শিশুদের সহায়ক পরিবেশ দেয় — যেখানে তারা আত্মবিশ্বাস নিয়ে শিখতে, মিশতে ও বাড়তে পারে।",
+        "dEn": "A structured school day, attentive adult supervision and clear routines provide children with a supportive environment where they can learn, interact and grow with confidence."
+      },
+      {
+        "tBn": "সুস্থ দেহ, সুস্থ মন",
+        "tEn": "Healthy Body, Healthy Mind",
+        "dBn": "প্রতিদিনের শারীরিক কার্যক্রম, পুষ্টিকর খাবার ও পর্যাপ্ত বিশ্রাম শিশুদের স্বাস্থ্যকর জীবনধারার অভ্যাস গড়তে সাহায্য করে। একাডেমিক শেখা, চলাফেরা, বিনোদন ও বিশ্রামের মধ্যে দিনে সুস্থ ভারসাম্য থাকে।",
+        "dEn": "Daily physical activities, nutritious meals and appropriate rest help children develop healthy lifestyle habits. The day maintains a healthy balance between academic learning, movement, recreation and relaxation."
+      },
+      {
+        "tBn": "প্রতিটি শিশুর জ্বলে ওঠার সুযোগ",
+        "tEn": "Every Child Has a Chance to Shine",
+        "dBn": "গান, শিল্প, খেলা, বক্তৃতা, নেতৃত্ব ও সৃজনশীল কার্যক্রমে শিশুরা নিজেদের শক্তি আবিষ্কার ও বিকাশের সুযোগ পায়। কসমো প্রচেষ্টা, আত্মবিশ্বাস, সৃজনশীলতা ও নিরন্তর উন্নতিতে উৎসাহ দেয়।",
+        "dEn": "Through music, art, sports, public speaking, leadership and creative activities, children have opportunities to discover and develop their strengths. Cosmo encourages effort, confidence, creativity and continuous improvement."
+      }
+    ],
+    "promise": {
+      "kickerBn": "কসমোর প্রতিশ্রুতি",
+      "kickerEn": "The Cosmo Promise",
+      "quoteBn": "“আমরা শিশুদের শুধু পরীক্ষার জন্য প্রস্তুত করি না; জীবনের জন্য প্রস্তুত করি।”",
+      "quoteEn": "“We don't just prepare children for examinations; we prepare them for life.”",
+      "descBn": "কসমো ডে-লং স্কুলিং একাডেমিক শেখা, শারীরিক সুস্থতা, চরিত্র বিকাশ, আধ্যাত্মিক মূল্যবোধ, ভালো আচরণ ও আনন্দময় শৈশব-অভিজ্ঞতাকে এক করে — শিশুদের শৃঙ্খলাপূর্ণ, আত্মবিশ্বাসী, সহানুভূতিশীল ও সক্ষম মানুষ হিসেবে গড়তে সাহায্য করে।",
+      "descEn": "Cosmo Day-long Schooling brings together academic learning, physical well-being, character development, spiritual values, good manners and joyful childhood experiences — helping children grow into disciplined, confident, compassionate and capable human beings."
+    },
+    "featuresHead": {
+      "titleBn": "কসমো ডে-লং স্কুলিংয়ের বৈশিষ্ট্য",
+      "titleEn": "Features of Cosmo Day-Long Schooling",
+      "taglineBn": "— স্কুলের চেয়েও বেশি, বিকাশে ভরা সম্পূর্ণ দিন —",
+      "taglineEn": "— More than school, a complete day of growth —"
+    },
+    "features": [
+      {
+        "icon": "💼",
+        "tBn": "কর্মজীবী অভিভাবকদের নিশ্চিন্ত জীবন",
+        "tEn": "Worry-Free Life for Working Parents",
+        "dBn": "অভিভাবকরা নিশ্চিন্তে পেশাগত দায়িত্বে মন দিতে পারেন। সারাদিন শিশুরা নিরাপদ, সুগঠিত, যত্নশীল ও শিক্ষামূলক পরিবেশে থাকে।",
+        "dEn": "Parents can focus on their professional responsibilities with peace of mind. Children remain in a safe, structured, caring and educational environment throughout the day."
+      },
+      {
+        "icon": "📝",
+        "tBn": "বাসায় হোমওয়ার্কের ঝামেলা নেই",
+        "tEn": "No Homework Hassle at Home",
+        "dBn": "তত্ত্বাবধানে বিকেলের পড়ার সময়েই হোমওয়ার্ক ও একাডেমিক অনুশীলন শেষ হয়। শিশুরা স্বস্তিতে বাড়ি ফিরে পরিবারের সাথে অর্থপূর্ণ সময় কাটাতে পারে।",
+        "dEn": "Homework and academic practice are completed during supervised after-school study hours. Children can return home relaxed and enjoy meaningful family time."
+      },
+      {
+        "icon": "📵",
+        "tBn": "ডিভাইস আসক্তিকে না বলুন",
+        "tEn": "Say No to Device Addiction",
+        "dBn": "সুপরিকল্পিত দিন শিশুদের শেখা, খেলা, সৃজনশীল কাজ, সামাজিক মেলামেশা ও বিনোদনে ব্যস্ত রাখে। কম অলস সময় ও উদ্দেশ্যমূলক কার্যক্রমে ফোন ও ডিজিটাল ডিভাইসের অপ্রয়োজনীয় নির্ভরতা কমে।",
+        "dEn": "A well-planned day keeps children engaged in learning, sports, creative activities, social interaction and recreation. With less idle time and purposeful activities, unnecessary dependence on phones and digital devices is reduced."
+      },
+      {
+        "icon": "👩‍🏫",
+        "tBn": "গৃহকর্মী নয়, শিক্ষকের তত্ত্বাবধানে",
+        "tEn": "Teacher-Guided, Not Housemaid-Guided",
+        "dBn": "গৃহ-সহকারীর অনানুষ্ঠানিক তত্ত্বাবধানে দীর্ঘ সময় না কাটিয়ে শিশুরা প্রশিক্ষিত শিক্ষক ও কেয়ারগিভারদের তত্ত্বাবধানে থাকে। তাদের শেখা, আচরণ, অভ্যাস ও দৈনিক রুটিনে নিরন্তর নজর দেওয়া হয়।",
+        "dEn": "Instead of spending long hours under the informal supervision of domestic help, children remain under the guidance of trained teachers and caregivers. Their learning, behaviour, habits and daily routines receive continuous attention."
+      },
+      {
+        "icon": "🤝",
+        "tBn": "একাকিত্ব নয় — একসাথে শেখো ও খেলো",
+        "tEn": "No More Loneliness — Learn & Play Together",
+        "dBn": "শিশুরা বন্ধুদের সাথে দিন কাটায় — শেখে, খেলে, সহযোগিতা করে ও অভিজ্ঞতা ভাগ করে। দলভিত্তিক কার্যক্রমে বন্ধুত্ব, যোগাযোগ, সহানুভূতি ও সামাজিক আত্মবিশ্বাস গড়ে ওঠে।",
+        "dEn": "Children spend their day with friends, learning, playing, collaborating and sharing experiences. Team-based activities help develop friendship, communication, empathy and social confidence."
+      },
+      {
+        "icon": "🧘",
+        "tBn": "মেডিটেশন, যোগা ও মাইন্ডফুলনেস",
+        "tEn": "Meditation, Yoga & Mindfulness",
+        "dBn": "প্রশান্তি, মনোযোগ ও আত্মসচেতনতায় নিয়মিত মেডিটেশন ও যোগা দৈনিক রুটিনে অন্তর্ভুক্ত। শিশুরা একাডেমিক পরিশ্রমের সাথে শারীরিক ও মানসিক সুস্থতার ভারসাম্য শেখে।",
+        "dEn": "Regular meditation and yoga are integrated into the daily routine to encourage calmness, concentration and self-awareness. Children learn to balance academic effort with physical and mental wellbeing."
+      },
+      {
+        "icon": "🤲",
+        "tBn": "নামাজ ও আধ্যাত্মিক শৃঙ্খলা",
+        "tEn": "Prayer & Spiritual Discipline",
+        "dBn": "শ্রদ্ধা ও সুগঠিতভাবে রুটিনে নামাজ ও আত্ম-চিন্তা অন্তর্ভুক্ত। শিশুরা থেমে ভাবা, চিন্তা করা ও ভেতরের শৃঙ্খলা বজায় রাখার অভ্যাস গড়ে।",
+        "dEn": "Prayer and reflection are incorporated into the routine in a respectful and structured manner. Children develop the habit of pausing, reflecting and maintaining inner discipline."
+      },
+      {
+        "icon": "⏰",
+        "tBn": "শৃঙ্খলা হয় দৈনিক অভ্যাস",
+        "tEn": "Discipline Becomes a Daily Habit",
+        "dBn": "সারা স্কুল দিনে সময়নিষ্ঠা, গোছানো রুটিন, দায়িত্ব ও শ্রদ্ধা চর্চা হয়। শিশুরা ধীরে ধীরে শেখে শৃঙ্খলা শুধু নিয়ম নয় — এটি জীবনযাপনের পদ্ধতি।",
+        "dEn": "Punctuality, orderly routines, responsibility and respect are practiced throughout the school day. Children gradually learn that discipline is not merely a rule — it is a way of life."
+      },
+      {
+        "icon": "🙏",
+        "tBn": "ভালো আচরণ শেখানো ও চর্চা হয়",
+        "tEn": "Good Manners Are Taught & Practiced",
+        "dBn": "প্রতিদিনের মেলামেশায় ভদ্রতা, বড়দের প্রতি শ্রদ্ধা, অন্যের প্রতি সদয়তা, ভাগ করে নেওয়া ও দায়িত্বশীল আচরণ জোরদার হয়। শিশুরা শুধু মুখস্থ না করে ভালো আচরণ চর্চার নিরন্তর সুযোগ পায়।",
+        "dEn": "Politeness, respect for elders, kindness to others, sharing and responsible behaviour are reinforced through everyday interactions. Children get continuous opportunities to practice good manners rather than simply memorize them."
+      },
+      {
+        "icon": "🧼",
+        "tBn": "পরিচ্ছন্নতা ও ব্যক্তিগত স্বাস্থ্যবিধি",
+        "tEn": "Cleanliness & Personal Hygiene",
+        "dBn": "নিজেদের ও চারপাশ পরিষ্কার-গোছানো রাখতে শিশুদের দিকনির্দেশনা দেওয়া হয়। হাত ধোয়া, পরিপাটি থাকা, ব্যক্তিগত যত্ন ও পরিবেশ পরিচ্ছন্নতার নিয়মিত অভ্যাস দৈনিক রুটিনের অংশ হয়।",
+        "dEn": "Children are guided to keep themselves and their surroundings clean and organized. Regular habits of handwashing, neatness, personal care and environmental cleanliness become part of their daily routine."
+      },
+      {
+        "icon": "🎒",
+        "tBn": "পড়া, খেলা ও বিশ্রাম — সব এক দিনে",
+        "tEn": "Study, Play & Rest — All in One Day",
+        "dBn": "কসমো ভারসাম্যপূর্ণ রুটিন তৈরি করে যেখানে একাডেমিক শেখার পাশে খেলা, শারীরিক কার্যক্রম, সৃজনশীল চর্চা ও পর্যাপ্ত বিশ্রাম থাকে। লক্ষ্য সম্পূর্ণ শিশু গড়া — শুধু একাডেমিক ফল নয়।",
+        "dEn": "Cosmo creates a balanced routine where academic learning is complemented by play, physical activity, creative pursuits and adequate rest. The aim is to develop the whole child — not just academic performance."
+      },
+      {
+        "icon": "📖",
+        "tBn": "তত্ত্বাবধানে বিকেলের শেখা",
+        "tEn": "Supervised After-School Learning",
+        "dBn": "বিকেলের সময় শিক্ষকের তত্ত্বাবধানে ফলপ্রসূ শেখার সময়ে রূপ নেয়। বাড়ি যাওয়ার আগে শিশুরা পাঠ রিভিশন, অ্যাসাইনমেন্ট শেষ ও একাডেমিক সহায়তা পেতে পারে।",
+        "dEn": "The after-school period is transformed into productive learning time with teacher supervision. Children can revise lessons, complete assignments and receive academic support before going home."
+      },
+      {
+        "icon": "🎨",
+        "tBn": "পাঠ্যবইয়ের বাইরে প্রতিভা আবিষ্কার",
+        "tEn": "Discover Talents Beyond Textbooks",
+        "dBn": "সারাদিনের পরিবেশে শিল্প, গান, খেলা, গল্প বলা, সৃজনশীলতা, দলগত কাজ ও ব্যবহারিক শেখার বেশি সুযোগ তৈরি হয়। প্রতিটি শিশু আগ্রহ আবিষ্কার ও লুকানো প্রতিভা বিকাশের জায়গা পায়।",
+        "dEn": "A full-day environment creates more opportunities for art, music, sports, storytelling, creativity, teamwork and practical learning. Every child gets space to discover interests and develop hidden talents."
+      },
+      {
+        "icon": "⚽",
+        "tBn": "প্রতিদিন শারীরিক ফিটনেস অগ্রাধিকার",
+        "tEn": "Physical Fitness as a Daily Priority",
+        "dBn": "চলাফেরা, খেলা, ব্যায়াম ও ইনডোর কার্যক্রমের নিয়মিত সুযোগ পায় শিশুরা। সক্রিয় রুটিন সুস্থ শারীরিক বিকাশে সহায়তা করে এবং প্রাণবন্ত জীবনধারা উপভোগ করতে শেখায়।",
+        "dEn": "Children get regular opportunities for movement, games, exercise and indoor activities. An active routine supports healthy physical development and teaches children to enjoy an energetic lifestyle."
+      },
+      {
+        "icon": "👥",
+        "tBn": "দলগত কাজে সামাজিক দক্ষতা",
+        "tEn": "Social Skills Through Teamwork",
+        "dBn": "দলগত কার্যক্রমে শিশুরা যোগাযোগ, সহযোগিতা, নেতৃত্ব, দায়িত্ব ভাগ ও একসাথে সমস্যা সমাধানে উৎসাহ পায়। এগুলো অপরিহার্য জীবনদক্ষতা যা শুধু পাঠ্যবইয়ে গড়ে ওঠে না।",
+        "dEn": "Group activities encourage children to communicate, cooperate, lead, share responsibility and solve problems together. These are essential life skills that cannot be developed through textbooks alone."
+      },
+      {
+        "icon": "🛡️",
+        "tBn": "নিরাপদ, সুগঠিত ও উদ্দেশ্যমূলক দিন",
+        "tEn": "Safe, Structured & Purposeful Day",
+        "dBn": "দিনের প্রতিটি অংশের উদ্দেশ্য আছে — আগমন ও ক্লাস থেকে খাবার, বিনোদন, পড়া, বিশ্রাম ও বিদায় পর্যন্ত। তত্ত্বাবধানপূর্ণ স্কুল পরিবেশে শিশুরা অনুমানযোগ্য রুটিন অনুভব করে।",
+        "dEn": "Every part of the day has a purpose — from arrival and lessons to meals, recreation, study, rest and departure. Children experience a predictable routine within a supervised school environment."
+      },
+      {
+        "icon": "🧭",
+        "tBn": "স্বাবলম্বন ও দায়িত্ববোধ গড়া",
+        "tEn": "Building Independence & Responsibility",
+        "dBn": "নিজেদের জিনিস সামলানো, ব্যক্তিগত গোছানোভাব রাখা, দায়িত্ব শেষ করা ও সঠিক সিদ্ধান্ত নিতে শিশুদের উৎসাহ দেওয়া হয়। ধীরে ধীরে তারা আরও স্বাবলম্বী ও দায়বদ্ধ হতে শেখে।",
+        "dEn": "Children are encouraged to manage their belongings, maintain personal order, complete responsibilities and make appropriate choices. Gradually, they learn to become more self-reliant and accountable."
+      },
+      {
+        "icon": "🏆",
+        "tBn": "প্রতিযোগিতার আগে চরিত্র",
+        "tEn": "Character Before Competition",
+        "dBn": "কসমো শুধু শিশুরা কী জানে তাতে নয়, তারা কেমন মানুষ হচ্ছে তাতেও মনোযোগ দেয়। সততা, শ্রদ্ধা, দায়িত্ব, সহানুভূতি, পরিচ্ছন্নতা ও আত্ম-শৃঙ্খলা প্রতিদিনের স্কুলজীবনে বোনা থাকে।",
+        "dEn": "Cosmo focuses not only on what children know, but also on who they become. Honesty, respect, responsibility, compassion, cleanliness and self-discipline are woven into everyday school life."
+      }
+    ],
+    "featuresClose": {
+      "brandBn": "কসমো ডে-লং স্কুলিং",
+      "brandEn": "Cosmo Day-Long Schooling",
+      "textBn": " — কারণ শিশুর দিন শুধু ভরে তোলা উচিত নয়, অর্থপূর্ণভাবে গড়ে তোলা উচিত।",
+      "textEn": " — because a child's day should not simply be filled, it should be meaningfully developed."
+    },
+    "visit": {
+      "titleBn": "ক্যাম্পাস ভিজিটে আসুন",
+      "titleEn": "Come Visit the Campus",
+      "bullets": [
+        {
+          "bn": "পরিবেশ নিজে দেখুন, ইনচার্জের সাথে কথা বলুন",
+          "en": "See the campus, meet the in-charge"
+        },
+        {
+          "bn": "ভর্তি প্রক্রিয়া ও দৈনিক রুটিন জেনে নিন",
+          "en": "Understand admission and the daily routine"
+        },
+        {
+          "bn": "সন্তানসহ আসুন এবং কসমোর পরিষ্কার, শিশুবান্ধব শিক্ষাপরিবেশ উপভোগ করুন",
+          "en": "Come with your child and enjoy the clean, children friendly educational environment at Cosmo"
+        }
+      ],
+      "callBn": "সরাসরি কল",
+      "callEn": "Call directly"
+    },
+    "visitForm": {
+      "titleBn": "📅 ক্যাম্পাস ভিজিট রিকোয়েস্ট",
+      "titleEn": "📅 Campus visit request",
+      "nameBn": "আপ���ার নাম *",
+      "nameEn": "Your name *",
+      "phoneBn": "ফোন *",
+      "phoneEn": "Phone *",
+      "ageBn": "শিশুর বয়স (যেমন ৪ বছর)",
+      "ageEn": "Child's age (e.g. 4 years)",
+      "dayBn": "পছন্দের দিন",
+      "dayEn": "Preferred day",
+      "submitBn": "ভিজিট রিকোয়েস্ট পাঠান",
+      "submitEn": "Send visit request",
+      "noteBn": "সাবমিটের পর ২৪ ঘণ্টায় কল পাবেন।",
+      "noteEn": "You will get a call within 24 hours.",
+      "doneTitleBn": "ভিজিট রিকোয়েস্ট পৌঁছেছে!",
+      "doneTitleEn": "Visit request received!",
+      "doneDescBn": "২৪ ঘণ্টার মধ্যে কল করে সময় নিশ্চিত করা হবে। হেল্পলাইন: 01972-900045",
+      "doneDescEn": "We will call within 24 hours to confirm. Helpline: 01972-900045"
+    }
+  }
+}
