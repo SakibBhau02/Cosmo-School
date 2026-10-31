@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addNotice, checkAdminKey, type CmsNotice } from "@/lib/cms";
+import { authorizeAdmin, canWrite } from "@/lib/auth";
+import { addNotice, type CmsNotice } from "@/lib/cms";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
-  if (!checkAdminKey(req)) {
+  if (!canWrite(await authorizeAdmin(req))) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
   const body = (await req.json().catch(() => null)) as CmsNotice | null;

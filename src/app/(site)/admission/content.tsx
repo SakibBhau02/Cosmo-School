@@ -83,8 +83,8 @@ export default function AdmissionContent({
         <p className="mt-3 max-w-2xl text-white/80">
           {t(
             lang,
-            "২০২৭ শিক্ষাবর্ষে প্রি-স্কুল থেকে ৯ম শ্রেণি ও কসমো ডে লং স্কুলে ভর্তি চলছে। প্রাথমিক আবেদনে ভর্তি ফিতে ১০% পর্যন্ত ছাড়।",
-            "Admission is open for the 2027 session — Pre-School to Class 9 plus Cosmo Day Long School. Up to 10% off the admission fee on early applications."
+            "২০২৭ শিক্ষাবর্ষে প্রি-স্কুল থেকে ৯ম শ্রেণি ও কসমো ডে লং স্কুলে ভর্তি চলছে। ১৫ই নভেম্বর'২৬ পর্যন্ত ভর্তি ফিতে ২০% ছাড়।",
+            "Admission is open for the 2027 session — Pre-School to Class 9 plus Cosmo Day Long School. 20% waiver on the admission fee until 15 November 2026."
           )}
         </p>
         <div className="mt-6 flex flex-wrap gap-3">

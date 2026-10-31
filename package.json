@@ -15,7 +15,9 @@
     "db:migrate": "node scripts/db-migrate.mjs",
     "db:migrate:prod": "node scripts/db-migrate.mjs --prod",
     "db:seed": "node scripts/db-seed.mjs",
-    "db:seed:prod": "node scripts/db-seed.mjs --prod"
+    "db:seed:prod": "node scripts/db-seed.mjs --prod",
+    "seed:admin": "node scripts/seed-admin.mjs",
+    "seed:admin:prod": "node scripts/seed-admin.mjs --prod"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.4",

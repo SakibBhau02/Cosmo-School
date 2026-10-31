@@ -1,28 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import { checkAdminKey, getSiteContent, saveSiteContent } from "@/lib/cms";
+import { NextResponse } from "next/server";
+
+import { authorizeAdmin } from "@/lib/auth";
+import { listContent } from "@/content/store";
 
 export const dynamic = "force-dynamic";
 
-const ALLOWED = ["hero", "heroSlides", "stats", "events", "fees", "testimonials", "daycarePlans", "daycareFull", "academics", "results", "daylong"] as const;
+export async function GET(req: Request) {
+  const user = await authorizeAdmin(req);
+  if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-export async function GET(req: NextRequest) {
-  if (!checkAdminKey(req)) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-  return NextResponse.json(await getSiteContent());
-}
-
-export async function POST(req: NextRequest) {
-  if (!checkAdminKey(req)) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-  const patch = (await req.json().catch(() => null)) as Record<string, unknown> | null;
-  if (!patch || typeof patch !== "object") {
-    return NextResponse.json({ message: "empty patch" }, { status: 400 });
-  }
-  const clean: Record<string, unknown> = {};
-  for (const k of ALLOWED) {
-    if (patch[k] !== undefined) clean[k] = patch[k];
-  }
-  return NextResponse.json(await saveSiteContent(clean));
+  return NextResponse.json({ pages: await listContent() });
 }

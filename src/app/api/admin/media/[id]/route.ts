@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { checkAdminKey } from "@/lib/cms";
+import { authorizeAdmin, canWrite } from "@/lib/auth";
 import { db, schema } from "@/lib/db/client";
 import { deleteStored } from "@/lib/storage";
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  if (!checkAdminKey(req)) return NextResponse.json({ message: "unauthorized" }, { status: 401 });
+  if (!canWrite(await authorizeAdmin(req)))
+    return NextResponse.json({ message: "unauthorized" }, { status: 401 });
   const { id } = await params;
   const rows = await db().select().from(schema.media).where(eq(schema.media.id, Number(id)));
   const row = rows[0];

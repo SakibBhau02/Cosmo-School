@@ -36,31 +36,37 @@ export default function AdminPage() {
   const [editing, setEditing] = useState<string | null>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("cosmo-admin-key") ?? "";
-    if (saved) void load(saved);
+    // A signed-in admin session already authorises these endpoints, so try
+    // that first; fall back to the saved legacy key.
+    void load("").then((ok) => {
+      if (ok) return;
+      const saved = localStorage.getItem("cosmo-admin-key") ?? "";
+      if (saved) void load(saved);
+    });
   }, []);
 
-  async function load(k: string) {
+  async function load(k: string): Promise<boolean> {
     const h = { "x-admin-key": k };
     const [c, n, q] = await Promise.all([
-      fetch("/api/admin/content", { headers: h }),
+      fetch("/api/admin/site-content", { headers: h }),
       fetch("/api/cms/notices"),
       fetch("/api/admin/inquiries", { headers: h }),
     ]);
     if (c.status === 401 || q.status === 401) {
-      setMsg("❌ ভুল কী।");
-      return;
+      if (k) setMsg("❌ ভুল কী।");
+      return false;
     }
-    localStorage.setItem("cosmo-admin-key", k);
+    if (k) localStorage.setItem("cosmo-admin-key", k);
     setSite(await c.json());
     setNotices(await n.json());
     setInquiries(await q.json());
     setAuthed(true);
     setMsg("");
+    return true;
   }
 
   async function saveContent(patch: Partial<SiteContent>, okMsg: string) {
-    const res = await fetch("/api/admin/content", {
+    const res = await fetch("/api/admin/site-content", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-admin-key": key },
       body: JSON.stringify(patch),

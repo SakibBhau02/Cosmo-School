@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkAdminKey, deleteNotice, updateNotice } from "@/lib/cms";
+import { authorizeAdmin, canWrite } from "@/lib/auth";
+import { deleteNotice, updateNotice } from "@/lib/cms";
 
 export const dynamic = "force-dynamic";
 
@@ -7,7 +8,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  if (!checkAdminKey(req)) {
+  if (!canWrite(await authorizeAdmin(req))) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
   const { slug } = await params;
@@ -22,7 +23,7 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  if (!checkAdminKey(req)) {
+  if (!canWrite(await authorizeAdmin(req))) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
   const { slug } = await params;

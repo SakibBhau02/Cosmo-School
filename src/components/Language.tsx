@@ -7,22 +7,22 @@ export type Lang = "bn" | "en";
 const STORE_KEY = "cosmo-lang";
 
 const Ctx = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({
-  lang: "bn",
+  lang: "en",
   setLang: () => {},
 });
 
 function readStored(): Lang {
   try {
-    return window.localStorage.getItem(STORE_KEY) === "en" ? "en" : "bn";
+    return window.localStorage.getItem(STORE_KEY) === "bn" ? "bn" : "en";
   } catch {
-    return "bn";
+    return "en";
   }
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  // SSR snapshot is always "bn" (avoids hydration mismatch);
-  // the stored choice is applied right after mount.
-  const [lang, setLangState] = useState<Lang>("bn");
+  // English is the site default. The SSR snapshot is always "en" (avoids
+  // hydration mismatch); a visitor's stored choice is applied after mount.
+  const [lang, setLangState] = useState<Lang>("en");
 
   useEffect(() => {
     setLangState(readStored());

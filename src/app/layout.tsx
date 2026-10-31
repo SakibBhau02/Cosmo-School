@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import RouteProgress from "@/components/RouteProgress";
-import StickyCta from "@/components/StickyCta";
 import { LanguageProvider } from "@/components/Language";
 
 export const metadata: Metadata = {
-    title: "Cosmo School — Banasree Campus | বনশ্রী ক্যাম্পাস",
+  title: "Cosmo School — Banasree Campus",
   description:
     "Cosmo School Banasree Campus, Dhaka — National curriculum in English version. Pre-School to Class 10. Admission, notices, results, academics.",
 };
@@ -18,10 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="bn" className="h-full">
+    <html lang="en" className="h-full">
       <link
         rel="preload"
-        href="/fonts/HindSiliguri-bengali-700.woff2"
+        href="/fonts/Inter-latin-var.woff2"
         as="font"
         type="font/woff2"
         crossOrigin="anonymous"
@@ -34,13 +30,7 @@ export default function RootLayout({
         crossOrigin="anonymous"
       />
       <body className="min-h-full flex flex-col antialiased">
-        <LanguageProvider>
-          <RouteProgress />
-          <Navbar />
-          <main className="flex-1 pb-16 sm:pb-0">{children}</main>
-          <Footer />
-          <StickyCta />
-        </LanguageProvider>
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

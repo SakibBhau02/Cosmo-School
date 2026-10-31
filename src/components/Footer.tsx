@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { branch } from "@/config/site";
+import type { GlobalContent } from "@/content/defaults/global";
+import { globalDefaults } from "@/content/defaults/global";
+import { pickLocalized } from "@/content/merge";
 import { useLang, t } from "./Language";
 
 const explore = [
@@ -25,8 +27,9 @@ const programs = [
   { href: "/admission", bn: "📝 ভর্তি প্রক্রিয়া", en: "📝 Admission Process" },
 ];
 
-export default function Footer() {
+export default function Footer({ global }: { global?: GlobalContent }) {
   const { lang } = useLang();
+  const g = global ?? globalDefaults;
   const pick = (b: string, e: string) => t(lang, b, e);
   return (
     <footer className="mt-20">
@@ -35,12 +38,12 @@ export default function Footer() {
         <div className="mx-auto max-w-7xl px-4 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h2 className="font-display text-2xl sm:text-3xl font-bold">
-              {pick("২০২৭ সেশনে ভর্তি চলছে — আসন সীমিত", "Admission open for 2027 — limited seats")}
+              {pickLocalized(g.admission.stripTitle, lang)}
             </h2>
             <p className="font-medium text-pine-950/75">
-              {pick("আজই ক্যাম্পাস ঘুরে দেখুন • হেল্পলাইন: ", "Visit campus today • Helpline: ")}
-              <a href={`tel:${branch.phone}`} className="font-bold underline">
-                {branch.phone}
+              {pickLocalized(g.admission.stripBody, lang)}
+              <a href={`tel:${g.contact.phone}`} className="font-bold underline">
+                {g.contact.phone}
               </a>
             </p>
           </div>
@@ -48,7 +51,7 @@ export default function Footer() {
             href="/admission"
             className="shrink-0 rounded-full bg-pine-950 text-white px-8 py-3.5 font-bold hover:bg-pine-900 hover:-translate-y-0.5 transition shadow-xl"
           >
-            {pick("আবেদন করুন →", "Apply Now →")}
+            {pickLocalized(g.admission.applyLabel, lang)} →
           </Link>
         </div>
       </div>
@@ -74,10 +77,10 @@ export default function Footer() {
               )}
             </p>
             <div className="mt-4 flex gap-2">
-              <a href={branch.facebook} target="_blank" className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-gold-500 hover:text-pine-950 transition">
+              <a href={g.links.facebook} target="_blank" className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-gold-500 hover:text-pine-950 transition">
                 Facebook
               </a>
-              <a href={branch.youtube} target="_blank" className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-gold-500 hover:text-pine-950 transition">
+              <a href={g.links.youtube} target="_blank" className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-gold-500 hover:text-pine-950 transition">
                 YouTube
               </a>
             </div>
@@ -115,16 +118,16 @@ export default function Footer() {
           <div>
             <h3 className="font-display font-bold text-white mb-4">{pick("যোগাযোগ", "Contact")}</h3>
             <p className="text-sm font-semibold text-gold-300">{pick("বনশ্রী ক্যাম্পাস", "Banasree Campus")}</p>
-            <p className="text-sm mt-1">{branch.address}</p>
+            <p className="text-sm mt-1">{g.contact.address}</p>
             <p className="text-sm mt-2">
-              📞 <a href={`tel:${branch.phone}`} className="font-bold text-white hover:text-gold-300">{branch.phone}</a>
+              📞 <a href={`tel:${g.contact.phone}`} className="font-bold text-white hover:text-gold-300">{g.contact.phone}</a>
             </p>
-            <p className="text-sm">✉️ {branch.email}</p>
-            <p className="text-xs mt-3 text-white/60">🕗 {pick("অফিস: সকাল ৮টা – রাত ৮টা (শনি–বৃহস্পতি)", "Office: 8:00AM - 8:00PM (Saturday to Thursday)")}</p>
+            <p className="text-sm">✉️ {g.contact.email}</p>
+            <p className="text-xs mt-3 text-white/60">🕗 {pickLocalized(g.contact.hours, lang)}</p>
             <div className="mt-4 rounded-2xl bg-white/5 border border-white/10 p-3 text-xs">
               <p className="font-bold text-white">{pick("অফিস সময়", "Office Hours")}</p>
-              <p className="mt-1 text-white/65">{pick("সকাল ৮টা – রাত ৮টা (শনি–বৃহস্পতি)", "8:00AM - 8:00PM (Saturday to Thursday)")}</p>
-              <p className="mt-1">📞 {pick("ভর্তি হেল্পলাইন", "Admission helpline")}: <a href={`tel:${branch.phone}`} className="font-bold text-gold-300">{branch.phone}</a></p>
+              <p className="mt-1 text-white/65">{pickLocalized(g.contact.hours, lang)}</p>
+              <p className="mt-1">📞 {pickLocalized(g.admission.helplineLabel, lang)}: <a href={`tel:${g.contact.phone}`} className="font-bold text-gold-300">{g.contact.phone}</a></p>
             </div>
           </div>
         </div>

@@ -96,7 +96,9 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
+  name: text("name").notNull().default(""),
   role: text("role").notNull().default("editor"), // superadmin | editor | viewer
+  lastLoginAt: timestamp("last_login_at"),
 });
 
 export const auditLog = pgTable("audit_log", {
@@ -118,4 +120,39 @@ export const siteDocs = pgTable("site_docs", {
   key: text("key").primaryKey(),
   doc: jsonb("doc").notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// ── Page content CMS (admin panel). One row per editable document (home,
+// global, about, ...). `draft` is what the editor saves, `published` is what
+// the public site reads, so a half-finished edit never reaches visitors.
+export const contentDocs = pgTable("content_docs", {
+  key: text("key").primaryKey(),
+  draft: jsonb("draft").notNull(),
+  published: jsonb("published"),
+  updatedBy: text("updated_by").notNull().default(""),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  publishedAt: timestamp("published_at"),
+  publishedBy: text("published_by").notNull().default(""),
+});
+
+// Every publish keeps a snapshot so an editor can be rolled back.
+export const contentVersions = pgTable("content_versions", {
+  id: serial("id").primaryKey(),
+  key: text("key").notNull(),
+  version: integer("version").notNull(),
+  doc: jsonb("doc").notNull(),
+  savedBy: text("saved_by").notNull().default(""),
+  savedAt: timestamp("saved_at").defaultNow().notNull(),
+});
+
+// Server-side admin sessions. The cookie carries a random token; only its
+// SHA-256 hash is stored, so a database leak cannot be replayed as a login.
+export const sessions = pgTable("sessions", {
+  tokenHash: text("token_hash").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  userAgent: text("user_agent").notNull().default(""),
 });

@@ -29,6 +29,16 @@ import { resolveImg } from "@/lib/img";
 import TestimonialMarquee from "@/components/TestimonialMarquee";
 import Shuddhachar from "@/components/Shuddhachar";
 import { sortClubs } from "./clubs/content";
+import { pickLocalized } from "@/content/merge";
+import { homeDefaults } from "@/content/defaults/home";
+import { globalDefaults } from "@/content/defaults/global";
+
+type SitePayload = SiteContent & {
+  content?: {
+    global: typeof globalDefaults | null;
+    home: typeof homeDefaults | null;
+  };
+};
 
 function Ticker({ items }: { items: CmsNotice[] }) {
   const { lang } = useLang();
@@ -103,7 +113,7 @@ const CLUB_ICONS: Record<string, string> = {
 export default function Home() {
   const { lang } = useLang();
   const bn = lang === "bn";  // Admin-editable content: seed first paint, then live CMS values.
-  const [site, setSite] = useState<SiteContent | null>(null);
+  const [site, setSite] = useState<SitePayload | null>(null);
   const [noticeList, setNoticeList] = useState<CmsNotice[]>(seedNotices);
 
   useEffect(() => {
@@ -128,6 +138,9 @@ export default function Home() {
     site?.gallery ?? seedGallery.map((g, i) => ({ slug: `g-${i}`, title: g.title, cat: g.cat, img: g.src }));
   const heroSlides = site?.heroSlides?.length ? site.heroSlides : heroConfig.slides;
   const results = site?.results ?? sscResult2025;
+  const home = site?.content?.home ?? homeDefaults;
+  const offer = home.offer;
+  const contact = site?.content?.global?.contact ?? globalDefaults.contact;
 
   return (
     <>
@@ -370,23 +383,42 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Admission CTA */}
-      <section className="mx-auto max-w-7xl px-4 pt-20 grid lg:grid-cols-2 gap-10 items-start">
-        <Reveal>
-          <Eyebrow>{t(lang, "সীমিত সময়ের অফার", "Limited time offer")}</Eyebrow>
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-pine-950 mt-3 leading-tight">
-            {t(lang, "ভর্তিতে ১০% পর্যন্ত ছাড়", "Up to 10% off on admission")}
-          </h2>
-          <ul className="mt-6 grid gap-3 text-ink/75 font-medium">
-            <li>✅ {t(lang, "ইংলিশ ভার্সনে জাতীয় কারিকুলাম", "National curriculum in English version")}</li>
-            <li>✅ {t(lang, "অভিজ্ঞ ও যত্নশীল শিক্ষকমণ্ডলী", "Dedicated, experienced faculty")}</li>
-            <li>✅ {t(lang, "নৈতিক, একাডেমিক ও সহশিক্ষা বিকাশ", "Moral, academic and extracurricular growth")}</li>
-          </ul>
-          <p className="mt-6 rounded-2xl bg-gold-500/20 border border-gold-500/50 p-4 text-sm font-semibold text-pine-950">
-            📞 {t(lang, "ভর্তি হেল্পলাইন", "Admission helpline")}: {branch.phone} • {branch.ipPhone}
-          </p>
-        </Reveal>
-        <Reveal delay={0.1}>
+      {/* Admission CTA — copy and deadline come from /admin/pages/home */}
+      <section
+        className={
+          offer.active
+            ? "mx-auto max-w-7xl px-4 pt-20 grid lg:grid-cols-2 gap-10 items-start"
+            : "mx-auto max-w-2xl px-4 pt-20"
+        }
+      >
+        {offer.active && (
+          <Reveal>
+            <Eyebrow>{pickLocalized(offer.eyebrow, lang)}</Eyebrow>
+            <h2 className="font-display text-3xl sm:text-5xl font-bold text-pine-950 mt-3 leading-tight">
+              {pickLocalized(offer.title, lang)}
+            </h2>
+            {offer.deadline ? (
+              <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-pine-950 px-4 py-2 text-xs font-bold uppercase tracking-wide text-white">
+                <span aria-hidden>⏳</span>
+                {lang === "bn" ? "শেষ তারিখ" : "Deadline"}: {tdate(lang, offer.deadline)}
+              </p>
+            ) : null}
+            <ul className="mt-6 grid gap-3 text-ink/75 font-medium">
+              {offer.bullets.map((bullet, index) => (
+                <li key={index}>✅ {pickLocalized(bullet, lang)}</li>
+              ))}
+            </ul>
+            <p className="mt-6 rounded-2xl bg-gold-500/20 border border-gold-500/50 p-4 text-sm font-semibold text-pine-950">
+              📞 {pickLocalized(offer.helplineLabel, lang)}: {contact.phone} • {contact.ipPhone}
+            </p>
+            {pickLocalized(offer.note, lang) ? (
+              <p className="mt-2 px-1 text-[11px] leading-relaxed text-ink/45">
+                {pickLocalized(offer.note, lang)}
+              </p>
+            ) : null}
+          </Reveal>
+        )}
+        <Reveal delay={offer.active ? 0.1 : 0}>
           <InquiryForm />
         </Reveal>
       </section>

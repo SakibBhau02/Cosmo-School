@@ -1,17 +1,19 @@
 import { NextResponse } from "next/server";
 import { desc } from "drizzle-orm";
-import { checkAdminKey } from "@/lib/cms";
+import { authorizeAdmin, canWrite } from "@/lib/auth";
 import { db, schema } from "@/lib/db/client";
 import { storeImage, validateImage } from "@/lib/storage";
 
 export async function GET(req: Request) {
-  if (!checkAdminKey(req)) return NextResponse.json({ message: "unauthorized" }, { status: 401 });
+  if (!(await authorizeAdmin(req)))
+    return NextResponse.json({ message: "unauthorized" }, { status: 401 });
   const rows = await db().select().from(schema.media).orderBy(desc(schema.media.id)).limit(100);
   return NextResponse.json(rows);
 }
 
 export async function POST(req: Request) {
-  if (!checkAdminKey(req)) return NextResponse.json({ message: "unauthorized" }, { status: 401 });
+  if (!canWrite(await authorizeAdmin(req)))
+    return NextResponse.json({ message: "unauthorized" }, { status: 401 });
   const form = await req.formData();
   const file = form.get("file");
   const altBn = String(form.get("altBn") ?? "");
