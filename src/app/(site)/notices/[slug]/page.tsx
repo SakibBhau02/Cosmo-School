@@ -1,12 +1,11 @@
 import NoticeDetailContent from "./content";
 import { notFound } from "next/navigation";
-import { getNotice, listNotices } from "@/lib/cms";
-import { notices as seed } from "@/config/site";
+import { getPublishedNotice, listPublishedNotices } from "@/lib/notices";
 
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const all = await listNotices().catch(() => seed);
+  const all = await listPublishedNotices();
   return all.map((n) => ({ slug: n.slug }));
 }
 
@@ -16,11 +15,11 @@ export default async function NoticeDetail({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const n = (await getNotice(slug).catch(() => null)) ?? seed.find((x) => x.slug === slug);
-  if (!n) notFound();
+  const notice = await getPublishedNotice(slug);
+  if (!notice) notFound();
 
-  const all = await listNotices().catch(() => seed);
+  const all = await listPublishedNotices();
   const others = all.filter((x) => x.slug !== slug).slice(0, 4);
 
-  return <NoticeDetailContent notice={n} others={others} />;
+  return <NoticeDetailContent notice={notice} others={others} />;
 }

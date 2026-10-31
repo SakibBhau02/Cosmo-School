@@ -116,23 +116,42 @@ export default async function AdminDashboard() {
       </section>
 
       <section className="rounded-2xl border border-pine-900/10 bg-white p-5 shadow-sm">
-        <h2 className="font-display text-base font-bold text-pine-950">
-          Already working, not yet rebuilt
-        </h2>
+        <h2 className="font-display text-base font-bold text-pine-950">Everything else</h2>
         <p className="mt-1 text-sm text-ink/60">
-          Notices, the media library and the admission inbox still live in the
-          original panel. They keep working with the shared admin key.
+          Notices, media and the admission inbox are fully rebuilt. The old panel is still reachable
+          while the remaining page editors are being migrated.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
-            href="/admin/legacy"
+            href="/admin/notices"
             className="rounded-xl bg-pine-950 px-4 py-2 text-xs font-bold text-white hover:bg-pine-900"
           >
-            Open legacy tools
+            Notices
           </Link>
-          <span className="rounded-xl border border-pine-900/10 bg-paper px-3 py-2 text-[11px] font-medium text-ink/50">
-            Phase 2: rebuild notices · media · inbox · gallery · teachers
-          </span>
+          <Link
+            href="/admin/media"
+            className="rounded-xl border border-pine-900/20 bg-white px-4 py-2 text-xs font-bold text-pine-950 hover:border-pine-900/40"
+          >
+            Media library
+          </Link>
+          <Link
+            href="/admin/inquiries"
+            className="rounded-xl border border-pine-900/20 bg-white px-4 py-2 text-xs font-bold text-pine-950 hover:border-pine-900/40"
+          >
+            Inquiry inbox
+          </Link>
+          <Link
+            href="/admin/users"
+            className="rounded-xl border border-pine-900/20 bg-white px-4 py-2 text-xs font-bold text-pine-950 hover:border-pine-900/40"
+          >
+            Accounts
+          </Link>
+          <Link
+            href="/admin/legacy"
+            className="rounded-xl border border-pine-900/10 bg-paper px-4 py-2 text-xs font-bold text-ink/50 hover:text-pine-950"
+          >
+            Old panel
+          </Link>
         </div>
       </section>
     </div>

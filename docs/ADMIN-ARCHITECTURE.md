@@ -109,7 +109,7 @@ npm run build
 
 Login at `/admin/login`. Sessions expire after 12 hours.
 
-## 7. Current coverage (Phase 1)
+## 7. Current coverage (Phase 2)
 
 Editable today:
 
@@ -118,25 +118,34 @@ Editable today:
 - **Site settings** — identity, contact, social links, every admission banner
   (header badge, hero badge, footer strip, apply label, helpline) and SEO
   defaults.
+- **Notices** (`/admin/notices`) — English + Bengali title and body, tag, date,
+  pin, draft/publish, delete. Drafts never reach visitors; published notices
+  revalidate the board, the ticker and the detail page.
+- **Media** (`/admin/media`) — upload, alt text (EN/BN), copy URL, delete,
+  search.
+- **Inquiry inbox** (`/admin/inquiries`) — filter by status, mark
+  new/contacted/done, internal notes, delete, CSV export.
+- **Accounts** (`/admin/users`) — create logins, change roles, reset passwords,
+  delete. Guarded so the panel always keeps one superadmin.
 
-Still served by the older layer (legacy tools at `/admin/legacy`): notices,
-media library, admission inbox, events, fees, testimonials, day-long school and
-the JSON escape hatches.
+Still served by the older layer (legacy tools at `/admin/legacy`): events, fees,
+testimonials, day-long school, hero slides and the JSON escape hatches.
 
 ## 8. Roadmap
 
 | Phase | Scope |
 |---|---|
-| 2 | Rebuild notices (English body, draft/publish), media library with alt text, inquiry inbox with status + CSV export, users & roles UI |
-| 3 | Page editors for About, Academics, Admission, Clubs, Contact, Gallery, Leadership, Mission & Vision, Results, Teachers, Day-Long School |
-| 4 | Retire `config/site.ts` + `data/*.json` as content sources, drop the WordPress write-through, version preview/rollback UI |
+| ~~2~~ | ✅ Notices, media library, inquiry inbox, users & roles |
+| 3 | Page editors for About, Academics, Admission, Clubs, Contact, Gallery, Leadership, Mission & Vision, Results, Teachers, Day-Long School + an image picker for image fields |
+| 4 | Retire `config/site.ts` + `data/*.json` as content sources, drop the WordPress write-through, version rollback UI |
 
 ## 9. Known gaps
 
-- Notices still store a Bengali body only (`body_bn`); English bodies land in
-  Phase 2.
 - The legacy panel still authenticates with `ADMIN_KEY` and stores it in
   `localStorage`; it is isolated at `/admin/legacy` and is not linked from the
   public site.
+- `data/cms.json` and `config/site.ts` still hold Bengali-only notice bodies for
+  the seed fallback; the database rows carry English and win on read.
 - `revalidatePath("/")` covers `global` changes but sub-pages that read global
   content are revalidated by tag on their next request (stale-while-revalidate).
+

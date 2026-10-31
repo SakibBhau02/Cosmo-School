@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useLang, t, tx, tdate } from "@/components/Language";
-import type { CmsNotice } from "@/lib/cms";
 
 export const TAG_EN: Record<string, string> = {
   "পরীক্ষা": "Exam",
@@ -13,7 +12,16 @@ export const TAG_EN: Record<string, string> = {
   "জরুরি": "Urgent",
 };
 
-export default function NoticesContent({ notices }: { notices: CmsNotice[] }) {
+type NoticeItem = {
+  slug: string;
+  date: string;
+  tag: string;
+  tagEn?: string;
+  titleBn: string;
+  titleEn: string;
+};
+
+export default function NoticesContent({ notices }: { notices: NoticeItem[] }) {
   const { lang } = useLang();
   return (
     <section className="mx-auto max-w-5xl px-4 pt-12">
@@ -29,7 +37,7 @@ export default function NoticesContent({ notices }: { notices: CmsNotice[] }) {
               href={`/notices/${n.slug}`}
               className="rounded-2xl bg-white border border-pine-900/10 shadow p-5 flex gap-4 hover:shadow-xl hover:-translate-y-0.5 transition group"
             >
-              <span className="shrink-0 h-fit rounded-xl bg-pine-900 text-white text-xs font-bold px-3 py-1.5">{tx(lang, n.tag, TAG_EN[n.tag])}</span>
+              <span className="shrink-0 h-fit rounded-xl bg-pine-900 text-white text-xs font-bold px-3 py-1.5">{tx(lang, n.tag, n.tagEn || TAG_EN[n.tag])}</span>
               <div className="min-w-0">
                 <h2 className="font-bold text-pine-950 group-hover:text-pine-700 break-words">{primary}</h2>
                 {lang === "bn" && secondary && secondary !== primary && (

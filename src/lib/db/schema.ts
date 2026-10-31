@@ -1,4 +1,4 @@
-import { integer, jsonb, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, integer, jsonb, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 
 // ── CMS master tables (Phase 1). Bilingual docs live in *Bn/*En JSONB columns;
 // per-page editors (Phase 3) read/write these. WP + JSON files stay read-only
@@ -38,9 +38,12 @@ export const notices = pgTable("notices", {
   slug: text("slug").primaryKey(),
   date: text("date").notNull().default(""),
   tag: text("tag").notNull().default("নোটিশ"),
+  tagEn: text("tag_en").notNull().default(""),
   titleBn: text("title_bn").notNull(),
   titleEn: text("title_en").notNull().default(""),
   bodyBn: text("body_bn").notNull().default(""),
+  bodyEn: text("body_en").notNull().default(""),
+  pinned: boolean("pinned").notNull().default(false),
   status: text("status").notNull().default("published"), // draft | published
   publishedAt: timestamp("published_at").defaultNow(),
 });
@@ -89,6 +92,8 @@ export const inquiries = pgTable("inquiries", {
   id: serial("id").primaryKey(),
   data: jsonb("data").notNull(),
   status: text("status").notNull().default("new"), // new | contacted | done
+  notes: text("notes").notNull().default(""),
+  handledBy: text("handled_by").notNull().default(""),
   at: timestamp("at").defaultNow(),
 });
 

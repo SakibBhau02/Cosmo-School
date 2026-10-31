@@ -1,28 +1,33 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { revalidatePath, revalidateTag } from "next/cache";
+
 import { authorizeAdmin, canWrite } from "@/lib/auth";
-import { addNotice, type CmsNotice } from "@/lib/cms";
+import { createNotice, listAllNotices, type NoticeInput } from "@/lib/notices";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: NextRequest) {
-  if (!canWrite(await authorizeAdmin(req))) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-  const body = (await req.json().catch(() => null)) as CmsNotice | null;
-  if (!body?.slug || !body?.titleBn || !body?.bodyBn) {
-    return NextResponse.json({ message: "slug, titleBn, bodyBn required" }, { status: 400 });
-  }
+export async function GET(req: Request) {
+  if (!(await authorizeAdmin(req)))
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  return NextResponse.json({ notices: await listAllNotices() });
+}
+
+export async function POST(req: Request) {
+  if (!canWrite(await authorizeAdmin(req)))
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
+  const body = (await req.json().catch(() => null)) as NoticeInput | null;
+  if (!body) return NextResponse.json({ error: "invalid JSON" }, { status: 400 });
+
   try {
-    await addNotice({
-      slug: body.slug.trim(),
-      date: body.date?.trim() || "চলমান",
-      titleBn: body.titleBn.trim(),
-      titleEn: body.titleEn?.trim() || body.titleBn.trim(),
-      tag: body.tag?.trim() || "নোটিশ",
-      bodyBn: body.bodyBn.trim(),
-    });
-    return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ message: "slug-exists" }, { status: 409 });
+    const notice = await createNotice(body);
+    revalidateTag("notices", "max");
+    revalidatePath("/notices");
+    revalidatePath(`/notices/${notice.slug}`);
+    return NextResponse.json({ ok: true, notice });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "create failed";
+    const status = message === "slug-exists" ? 409 : 400;
+    return NextResponse.json({ error: message }, { status });
   }
 }

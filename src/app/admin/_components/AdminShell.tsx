@@ -156,7 +156,55 @@ export default function AdminShell({ user, pages, children }: Props) {
 
             <div>
               <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
-                Tools
+                Content
+              </p>
+              <div className="space-y-0.5">
+                <Link
+                  href="/admin/notices"
+                  className={linkClass("/admin/notices")}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="grid h-5 w-5 place-items-center rounded-md bg-white/10 text-[10px]">
+                    ✦
+                  </span>
+                  Notices
+                </Link>
+                <Link
+                  href="/admin/media"
+                  className={linkClass("/admin/media")}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="grid h-5 w-5 place-items-center rounded-md bg-white/10 text-[10px]">
+                    ▣
+                  </span>
+                  Media
+                </Link>
+                <Link
+                  href="/admin/inquiries"
+                  className={linkClass("/admin/inquiries")}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="grid h-5 w-5 place-items-center rounded-md bg-white/10 text-[10px]">
+                    ✉
+                  </span>
+                  Inquiries
+                </Link>
+                <Link
+                  href="/admin/users"
+                  className={linkClass("/admin/users")}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="grid h-5 w-5 place-items-center rounded-md bg-white/10 text-[10px]">
+                    ⚿
+                  </span>
+                  Accounts
+                </Link>
+              </div>
+            </div>
+
+            <div>
+              <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
+                Legacy
               </p>
               <div className="space-y-0.5">
                 <Link
@@ -167,7 +215,7 @@ export default function AdminShell({ user, pages, children }: Props) {
                   <span className="grid h-5 w-5 place-items-center rounded-md bg-white/10 text-[10px]">
                     ⌗
                   </span>
-                  Notices, media, inbox
+                  Old panel
                 </Link>
               </div>
             </div>

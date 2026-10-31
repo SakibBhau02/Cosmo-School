@@ -1,12 +1,10 @@
 import NoticesContent from "./content";
-import { listNotices } from "@/lib/cms";
-import { notices as seed } from "@/config/site";
+import { listPublishedNotices } from "@/lib/notices";
 
-export const metadata = { title: "নোটিশ বোর্ড — Cosmo School Banasree" };
+export const metadata = { title: "Notice Board — Cosmo School Banasree" };
 export const revalidate = 60;
 
 export default async function NoticesPage() {
-  const notices = await listNotices().catch(() => seed);
-
+  const notices = await listPublishedNotices();
   return <NoticesContent notices={notices} />;
 }
