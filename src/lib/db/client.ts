@@ -32,9 +32,10 @@ function pool(): Pool {
     globalForDb.__cosmoPool = new Pool({
       connectionString: connStr,
       ssl: sslFor(connStr),
-      // Serverless-friendly: few sockets per instance, reclaimed quickly.
-      max: Number(process.env.PG_POOL_MAX ?? 3),
-      idleTimeoutMillis: 10_000,
+      // A long-running Node server (self-hosted) can afford a real pool; a
+      // serverless function cannot, so keep that case small.
+      max: Number(process.env.PG_POOL_MAX ?? (process.env.VERCEL ? 3 : 10)),
+      idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 10_000,
       allowExitOnIdle: true,
       // A stuck query should fail the request, not the function's whole budget.

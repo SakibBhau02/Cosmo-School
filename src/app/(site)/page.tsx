@@ -127,24 +127,48 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
-  const stats = site?.stats ?? seedStats;
-  const events = site?.events ?? seedEvents;
-  const voices: (typeof seedVoices[number] & { metaEn?: string; textEn?: string })[] = (
-    site?.testimonials ?? seedVoices
-  ).map((v) => ({ ...v, metaEn: VOICE_EN[v.text]?.meta, textEn: VOICE_EN[v.text]?.text }));
+  const home = site?.content?.home ?? homeDefaults;
+  const stats = home.stats.items?.length ? home.stats.items : site?.stats ?? seedStats;
+  const events = home.events.items?.length ? home.events.items : site?.events ?? seedEvents;
+  const voices: {
+    name: string;
+    meta: string;
+    metaEn?: string;
+    text: string;
+    textEn?: string;
+  }[] = home.testimonials.items?.length
+    ? home.testimonials.items.map((item) => ({
+        name: item.name,
+        meta: item.metaBn,
+        metaEn: item.metaEn,
+        text: item.textBn,
+        textEn: item.textEn,
+      }))
+    : (site?.testimonials ?? seedVoices).map((v) => ({
+        ...v,
+        metaEn: VOICE_EN[v.text]?.meta,
+        textEn: VOICE_EN[v.text]?.text,
+      }));
   const programs = site?.programs ?? seedPrograms;
   const clubs = site?.clubs ?? seedClubs;
   const gallery =
     site?.gallery ?? seedGallery.map((g, i) => ({ slug: `g-${i}`, title: g.title, cat: g.cat, img: g.src }));
-  const heroSlides = site?.heroSlides?.length ? site.heroSlides : heroConfig.slides;
+  const heroSlides = home.heroSlides.slides?.length
+    ? home.heroSlides.slides
+    : site?.heroSlides?.length
+      ? site.heroSlides
+      : heroConfig.slides;
   const results = site?.results ?? sscResult2025;
-  const home = site?.content?.home ?? homeDefaults;
   const offer = home.offer;
   const contact = site?.content?.global?.contact ?? globalDefaults.contact;
 
   return (
     <>
-      <Hero hero={site?.hero ?? { mode: heroConfig.mode, youtubeId: heroConfig.youtubeId }} media={site?.media} slides={heroSlides} />
+      <Hero
+        hero={site?.hero ?? { mode: heroConfig.mode, youtubeId: heroConfig.youtubeId }}
+        media={site?.media}
+        slides={heroSlides as unknown as typeof heroConfig.slides}
+      />
       <Ticker items={noticeList} />
 
       {/* Leadership messages */}
@@ -321,7 +345,7 @@ export default function Home() {
       {/* Gallery strip */}
       <section className="mx-auto max-w-7xl px-4 pt-20">
         <Reveal>
-          <Eyebrow>{t(lang, "গ্যালারি", "Gallery")}</Eyebrow>
+          <Eyebrow>{pickLocalized(home.sections.galleryTitle, lang)}</Eyebrow>
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-pine-950 mt-3">
             {t(lang, "স্মরণীয় মুহূর্ত", "Memorable moments")}
           </h2>
@@ -375,7 +399,7 @@ export default function Home() {
         <Reveal>
           <Eyebrow>{t(lang, "অভিভাবকদের কথা", "Guardian Voices")}</Eyebrow>
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-pine-950 mt-3">
-            {t(lang, "যারা আমাদের উপর আস্থা রেখেছেন", "Families who trust us")}
+            {pickLocalized(home.sections.voicesTitle, lang)}
           </h2>
         </Reveal>
         <div className="mt-8">

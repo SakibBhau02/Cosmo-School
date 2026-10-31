@@ -65,8 +65,8 @@ page / layout
     (optimistic redirect / 401). It never trusts the value.
   - Pages and API routes call `getAdminUser()` / `authorizeAdmin()`, which
     validates the session against the database on every request.
-  - The legacy `x-admin-key` header still works (`authorizeAdmin` fallback) so
-    the old tools keep running during the migration.
+  - The legacy `x-admin-key` header is still accepted by `authorizeAdmin()`
+    (no UI uses it) so scripts and emergency recovery keep working.
 - **Roles:** `viewer` can read; `editor` and `superadmin` can save/publish.
   New accounts are created with `npm run seed:admin` (see below).
 - **Throttle:** 8 failed logins per IP per 10 minutes (in-process).
@@ -109,18 +109,19 @@ npm run build
 
 Login at `/admin/login`. Sessions expire after 12 hours.
 
-## 7. Current coverage (Phase 2)
+## 7. Current coverage
 
 Editable today:
 
-- **Home** — hero copy/CTAs/video, the admission offer block (headline,
-  deadline, bullets, helpline, fine print, on/off switch), section headings.
+- **Home** — hero copy/CTAs/video, hero slides with per-slide buttons, stat
+  counters, upcoming events, guardian testimonials, the admission offer block
+  (headline, deadline, bullets, helpline, fine print, on/off switch) and the
+  gallery/testimonial headings.
 - **Site settings** — identity, contact, social links, every admission banner
   (header badge, hero badge, footer strip, apply label, helpline) and SEO
   defaults.
 - **Notices** (`/admin/notices`) — English + Bengali title and body, tag, date,
-  pin, draft/publish, delete. Drafts never reach visitors; published notices
-  revalidate the board, the ticker and the detail page.
+  pin, draft/publish, delete.
 - **Media** (`/admin/media`) — upload, alt text (EN/BN), copy URL, delete,
   search.
 - **Inquiry inbox** (`/admin/inquiries`) — filter by status, mark
@@ -128,24 +129,27 @@ Editable today:
 - **Accounts** (`/admin/users`) — create logins, change roles, reset passwords,
   delete. Guarded so the panel always keeps one superadmin.
 
-Still served by the older layer (legacy tools at `/admin/legacy`): events, fees,
-testimonials, day-long school, hero slides and the JSON escape hatches.
+The original panel (`/admin/legacy`) and its `site-content` endpoint have been
+removed. Its content is either migrated above or scheduled below.
 
 ## 8. Roadmap
 
 | Phase | Scope |
 |---|---|
+| ~~1~~ | ✅ English-first site, content engine, session auth, admin shell, home + site settings |
 | ~~2~~ | ✅ Notices, media library, inquiry inbox, users & roles |
-| 3 | Page editors for About, Academics, Admission, Clubs, Contact, Gallery, Leadership, Mission & Vision, Results, Teachers, Day-Long School + an image picker for image fields |
-| 4 | Retire `config/site.ts` + `data/*.json` as content sources, drop the WordPress write-through, version rollback UI |
+| 3 | Page editors for About, Academics, Admission (fees/docs/ages/FAQs), Clubs, Contact, Gallery, Leadership, Mission & Vision, Results, Teachers, Day-Long School + an image picker for image fields |
+| 4 | Retire `config/site.ts` + `data/*.json` as content sources, preview/rollback UI, WordPress code removal |
 
 ## 9. Known gaps
 
-- The legacy panel still authenticates with `ADMIN_KEY` and stores it in
-  `localStorage`; it is isolated at `/admin/legacy` and is not linked from the
-  public site.
+- Pages listed in Phase 3 still render from `config/site.ts` / `data/*.json`.
+  They are correct and fast, but not yet editable from the panel.
 - `data/cms.json` and `config/site.ts` still hold Bengali-only notice bodies for
-  the seed fallback; the database rows carry English and win on read.
+  the seed fallback; database rows carry English and win on read.
 - `revalidatePath("/")` covers `global` changes but sub-pages that read global
   content are revalidated by tag on their next request (stale-while-revalidate).
+- The `x-admin-key` header is still accepted by `authorizeAdmin()` for scripts
+  and emergencies; the UI only uses real sessions.
+
 

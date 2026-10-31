@@ -8,6 +8,7 @@ import {
   isContentKey,
   publishDraft,
   resetDocument,
+  restoreVersion,
   saveDraft,
 } from "@/content/store";
 
@@ -70,9 +71,11 @@ export async function POST(req: Request, ctx: Ctx) {
   if (!isContentKey(key)) return NextResponse.json({ error: "unknown page" }, { status: 404 });
 
   let action = "";
+  let version = 0;
   try {
-    const body = (await req.json()) as { action?: unknown };
+    const body = (await req.json()) as { action?: unknown; version?: unknown };
     action = typeof body.action === "string" ? body.action : "";
+    version = typeof body.version === "number" ? body.version : 0;
   } catch {
     return NextResponse.json({ error: "invalid JSON" }, { status: 400 });
   }
@@ -87,6 +90,11 @@ export async function POST(req: Request, ctx: Ctx) {
       await resetDocument(key, user.email);
       await finish(key);
       return NextResponse.json({ ok: true });
+    }
+    if (action === "restore") {
+      if (!version) return NextResponse.json({ error: "version required" }, { status: 400 });
+      const doc = await restoreVersion(key, version, user.email);
+      return NextResponse.json({ ok: true, doc });
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "action failed";

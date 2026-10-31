@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { ContentRecord, PageSchema } from "@/content/types";
 import Field from "./Field";
+import { Button } from "./ui";
 
 type Props = {
   page: PageSchema;
@@ -13,9 +14,21 @@ type Props = {
   canWrite: boolean;
 };
 
-type Busy = null | "save" | "publish" | "reset";
+type Busy = null | "save" | "publish" | "reset" | "restore";
+
+type VersionRow = { version: number; savedBy: string; savedAt: string | null };
 
 const fullWidth = new Set(["localized", "textarea", "localizedList", "list", "json"]);
+
+function formatWhen(value: string | null) {
+  if (!value) return "never";
+  return new Date(value).toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 export default function PageEditor({ page, record, canWrite }: Props) {
   const router = useRouter();
@@ -24,8 +37,11 @@ export default function PageEditor({ page, record, canWrite }: Props) {
   const [busy, setBusy] = useState<Busy>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const [versions, setVersions] = useState<VersionRow[] | null>(null);
 
   const dirty = useMemo(() => JSON.stringify(doc) !== baseline, [doc, baseline]);
+  const busyNow = busy !== null;
 
   useEffect(() => {
     if (!dirty) return;
@@ -54,7 +70,7 @@ export default function PageEditor({ page, record, canWrite }: Props) {
     router.refresh();
   }, [page.key, router]);
 
-  async function save(): Promise<boolean> {
+  const save = useCallback(async (): Promise<boolean> => {
     setBusy("save");
     setError(null);
     setMessage(null);
@@ -76,13 +92,27 @@ export default function PageEditor({ page, record, canWrite }: Props) {
     } finally {
       setBusy(null);
     }
-  }
+  }, [doc, page.key, router]);
+
+  // ⌘S / Ctrl+S saves the draft.
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        if (canWrite && !busyNow) void save();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [canWrite, busyNow, save]);
 
   async function publish() {
     if (dirty) {
       const saved = await save();
       if (!saved) return;
     }
+    if (!window.confirm(`Publish “${page.label}” to the live site now?`)) return;
+
     setBusy("publish");
     setError(null);
     try {
@@ -94,6 +124,7 @@ export default function PageEditor({ page, record, canWrite }: Props) {
       const data = (await res.json().catch(() => ({}))) as { error?: string; version?: number };
       if (!res.ok) throw new Error(data.error ?? "Publish failed.");
       setMessage(`Published — live now (version ${data.version ?? 1}).`);
+      setVersions(null);
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Publish failed.");
@@ -103,7 +134,8 @@ export default function PageEditor({ page, record, canWrite }: Props) {
   }
 
   async function reset() {
-    if (!window.confirm("Reset this page to the built-in defaults? Published copy is removed.")) return;
+    if (!window.confirm(`Reset “${page.label}” to the built-in defaults? The published copy is removed.`))
+      return;
     setBusy("reset");
     setError(null);
     try {
@@ -123,8 +155,51 @@ export default function PageEditor({ page, record, canWrite }: Props) {
     }
   }
 
+  async function openHistory() {
+    setShowHistory((v) => !v);
+    if (versions) return;
+    const res = await fetch(`/api/admin/content/${page.key}/versions`, { cache: "no-store" });
+    if (res.ok) {
+      const data = (await res.json()) as { versions: VersionRow[] };
+      setVersions(data.versions);
+    } else {
+      setVersions([]);
+    }
+  }
+
+  async function restore(version: number) {
+    if (!window.confirm(`Load version ${version} back into the editor? Nothing goes live until you publish.`))
+      return;
+    setBusy("restore");
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/content/${page.key}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "restore", version }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { error?: string; doc?: Record<string, unknown> };
+      if (!res.ok) throw new Error(data.error ?? "Restore failed.");
+      setDoc(data.doc ?? doc);
+      setMessage(`Version ${version} loaded as a draft. Review, then publish.`);
+      setShowHistory(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Restore failed.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+      <nav className="text-xs font-semibold text-ink/40">
+        <Link href="/admin" className="hover:text-pine-950">
+          Dashboard
+        </Link>
+        <span className="px-2">/</span>
+        <span className="text-pine-950">{page.label}</span>
+      </nav>
+
       <header className="space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -148,13 +223,13 @@ export default function PageEditor({ page, record, canWrite }: Props) {
         </div>
 
         <div className="flex flex-wrap gap-1.5">
-          {page.sections.map((section) => (
+          {page.sections.map((section, index) => (
             <a
               key={section.id}
               href={`#${section.id}`}
               className="rounded-full border border-pine-900/10 bg-white px-3 py-1 text-[11px] font-semibold text-ink/60 hover:border-gold-500 hover:text-pine-950"
             >
-              {section.title}
+              {index + 1}. {section.title}
             </a>
           ))}
         </div>
@@ -163,7 +238,7 @@ export default function PageEditor({ page, record, canWrite }: Props) {
       {/* Sticky action bar */}
       <div className="sticky top-0 z-10 -mx-4 border-y border-pine-900/10 bg-paper/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border sm:px-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
             <span
               className={[
                 "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-bold uppercase tracking-wide ring-1 ring-inset",
@@ -176,42 +251,33 @@ export default function PageEditor({ page, record, canWrite }: Props) {
               {dirty ? "Unsaved changes" : "Saved"}
             </span>
             <span className="hidden text-ink/45 sm:inline">
-              {record.updatedAt
-                ? `Last saved ${new Date(record.updatedAt).toLocaleString("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}`
-                : "Using built-in defaults"}
+              {record.updatedAt ? `Last saved ${formatWhen(record.updatedAt)}` : "Using built-in defaults"}
+              {record.updatedBy ? ` · ${record.updatedBy}` : ""}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={openHistory}
+              className="rounded-xl px-3 py-2 text-xs font-bold text-ink/55 hover:bg-white hover:text-pine-950"
+            >
+              History
+            </button>
+            <button
+              type="button"
               onClick={reset}
-              disabled={!canWrite || busy !== null}
+              disabled={!canWrite || busyNow}
               className="rounded-xl px-3 py-2 text-xs font-bold text-ink/50 hover:bg-white hover:text-red-600 disabled:opacity-40"
             >
               Reset
             </button>
-            <button
-              type="button"
-              onClick={save}
-              disabled={!canWrite || busy !== null || !dirty}
-              className="rounded-xl border border-pine-900/20 bg-white px-4 py-2 text-xs font-bold text-pine-950 hover:border-pine-900/40 disabled:opacity-40"
-            >
+            <Button variant="secondary" onClick={() => void save()} disabled={!canWrite || busyNow || !dirty}>
               {busy === "save" ? "Saving…" : "Save draft"}
-            </button>
-            <button
-              type="button"
-              onClick={publish}
-              disabled={!canWrite || busy !== null}
-              className="rounded-xl bg-pine-950 px-4 py-2 text-xs font-bold text-white shadow hover:bg-pine-900 disabled:opacity-50"
-            >
+            </Button>
+            <Button onClick={publish} disabled={!canWrite || busyNow}>
               {busy === "publish" ? "Publishing…" : "Publish"}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -226,6 +292,36 @@ export default function PageEditor({ page, record, canWrite }: Props) {
           </p>
         )}
       </div>
+
+      {showHistory && (
+        <div className="rounded-2xl border border-pine-900/10 bg-white p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-display text-sm font-bold text-pine-950">Published history</h2>
+            <button onClick={() => setShowHistory(false)} className="text-xs font-bold text-ink/40 hover:text-ink">
+              Close
+            </button>
+          </div>
+          {versions === null ? (
+            <p className="text-xs text-ink/50">Loading…</p>
+          ) : versions.length === 0 ? (
+            <p className="text-xs text-ink/50">Nothing published yet — the built-in copy is live.</p>
+          ) : (
+            <ul className="divide-y divide-pine-900/8">
+              {versions.map((version) => (
+                <li key={version.version} className="flex items-center justify-between gap-3 py-2 text-xs">
+                  <span className="font-semibold text-pine-950">Version {version.version}</span>
+                  <span className="text-ink/45">
+                    {formatWhen(version.savedAt)} · {version.savedBy || "unknown"}
+                  </span>
+                  <Button variant="secondary" onClick={() => void restore(version.version)} disabled={busyNow}>
+                    Load as draft
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       {!canWrite && (
         <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
@@ -245,29 +341,20 @@ export default function PageEditor({ page, record, canWrite }: Props) {
                 {index + 1}
               </span>
               <div>
-                <h2 className="font-display text-base font-bold text-pine-950">
-                  {section.title}
-                </h2>
+                <h2 className="font-display text-base font-bold text-pine-950">{section.title}</h2>
                 {section.description && (
-                  <p className="mt-0.5 text-xs leading-relaxed text-ink/50">
-                    {section.description}
-                  </p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-ink/50">{section.description}</p>
                 )}
               </div>
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
               {Object.entries(section.fields).map(([key, field]) => (
-                <div
-                  key={key}
-                  className={fullWidth.has(field.type) ? "sm:col-span-2" : undefined}
-                >
+                <div key={key} className={fullWidth.has(field.type) ? "sm:col-span-2" : undefined}>
                   <Field
                     field={field}
                     disabled={!canWrite}
-                    value={
-                      ((doc[section.id] as Record<string, unknown> | undefined)?.[key]) ?? ""
-                    }
+                    value={((doc[section.id] as Record<string, unknown> | undefined)?.[key]) ?? ""}
                     onChange={(value) => setSectionValue(section.id, key, value)}
                   />
                 </div>
@@ -277,16 +364,13 @@ export default function PageEditor({ page, record, canWrite }: Props) {
         ))}
       </div>
 
-      <div className="flex items-center justify-between rounded-2xl border border-pine-900/10 bg-white px-5 py-4 text-xs text-ink/50">
-        <span>Reset restores the built-in copy. Published history is kept for rollback.</span>
-        <button
-          type="button"
-          onClick={publish}
-          disabled={!canWrite || busy !== null}
-          className="rounded-xl bg-pine-950 px-4 py-2 text-xs font-bold text-white hover:bg-pine-900 disabled:opacity-50"
-        >
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-pine-900/10 bg-white px-5 py-4 text-xs text-ink/50">
+        <span>
+          Ctrl/⌘ + S saves a draft. Publishing is instant and keeps the previous version in History.
+        </span>
+        <Button onClick={publish} disabled={!canWrite || busyNow}>
           {busy === "publish" ? "Publishing…" : "Publish changes"}
-        </button>
+        </Button>
       </div>
     </div>
   );

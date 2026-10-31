@@ -1,9 +1,9 @@
 import { l } from "../merge";
+import { events as seedEvents, heroConfig, stats as seedStats } from "@/config/site";
 
 /**
- * Home page document. Phase 1 wires the hero and the admission-offer block;
- * the remaining home sections keep their existing CMS/seed path until their
- * editors land in Phase 2.
+ * Home page document. Each section of the admin editor maps to one object
+ * here, so the form can read and write `doc[section][field]` directly.
  */
 export const homeDefaults = {
   hero: {
@@ -50,11 +50,95 @@ export const homeDefaults = {
     formTitle: l("Book an admission visit", "ভর্তি পরিদর্শনের জন্য আবেদন করুন"),
   },
   sections: {
-    leadersTitle: l("Our leadership", "আমাদের নেতৃত্ব"),
-    programsTitle: l("Academic programmes", "একাডেমিক প্রোগ্রাম"),
-    noticesTitle: l("Notices & events", "নোটিশ ও ইভেন্ট"),
-    galleryTitle: l("Life at Cosmo", "কসমোতে আমাদের দিন"),
+    galleryTitle: l("Gallery", "গ্যালারি"),
     voicesTitle: l("Families who trust us", "যারা আমাদের উপর আস্থা রেখেছেন"),
+  },
+  heroSlides: {
+    slides: heroConfig.slides.map((slide) => ({
+      src: slide.src,
+      captionEn: slide.captionEn,
+      captionBn: slide.captionBn,
+      cta: (slide.cta ?? []).map((cta) => ({
+        labelEn: cta.labelEn,
+        labelBn: cta.labelBn,
+        href: cta.href,
+        variant: cta.variant ?? "gold",
+      })),
+    })),
+  },
+  stats: {
+    items: seedStats.map((stat) => ({
+      value: stat.value,
+      suffix: stat.suffix,
+      labelEn: stat.labelEn,
+      labelBn: stat.labelBn,
+    })),
+  },
+  events: {
+    items: seedEvents.map((event) => ({
+      date: event.date,
+      titleEn: event.titleEn,
+      titleBn: event.titleBn,
+      kind: event.kind,
+    })),
+  },
+  testimonials: {
+    items: [
+      {
+        name: "Rumana Afrin",
+        metaEn: "Mother of a Class 2 student",
+        metaBn: "দ্বিতীয় শ্রেণির শিক্ষার্থীর মা",
+        textEn:
+          "The teachers know each child individually. No homework pressure, yet so much progress in studies.",
+        textBn:
+          "শিক্ষকরা প্রতিটি বাচ্চাকে আলাদাভাবে চেনেন। হোমওয়ার্কের চাপ নেই, অথচ পড়াশোনায় অনেক এগিয়েছে।",
+      },
+      {
+        name: "Tanzil Ahmed",
+        metaEn: "Father of a Class 5 student",
+        metaBn: "পঞ্চম শ্রেণির শিক্ষার্থীর বাবা",
+        textEn:
+          "The day long school after office hours is a blessing for us. Daily photo updates — I work with complete peace of mind.",
+        textBn:
+          "অফিসের পর ডে লং স্কুলটা আমাদের জন্য আশীর্বাদ। প্রতিদিন ছবিসহ আপডেট পাই — নিশ্চিন্তে অফিস করতে পারি।",
+      },
+      {
+        name: "Sharmin Sultana",
+        metaEn: "Mother of a Prep II student",
+        metaBn: "Prep II-এর শিক্ষার্থীর মা",
+        textEn:
+          "Pitha Utshob, science fairs — my daughter can't wait to go to school. Enrolling her was the right decision.",
+        textBn:
+          "পিঠা উৎসব, বিজ্ঞান মেলা — মেয়েটা স্কুলে যেতে মুখিয়ে থাকে। ভর্তি সিদ্ধান্তটা সঠিক ছিল।",
+      },
+      {
+        name: "Kamrul Hasan",
+        metaEn: "Father of a Class 7 student",
+        metaBn: "সপ্তম শ্রেণির শিক্ষার্থীর বাবা",
+        textEn:
+          "Notices, results, fees — I get every update on time. The office staff are very cordial too.",
+        textBn:
+          "নোটিশ, রেজাল্ট, ফি — সব তথ্য সময়মতো পাই। অফিসের ব্যবহারও খুব আন্তরিক।",
+      },
+      {
+        name: "Nazma Begum",
+        metaEn: "Mother of a Class 1 student",
+        metaBn: "প্রথম শ্রেণির শিক্ষার্থীর মা",
+        textEn:
+          "My son never wanted to go to school; now he talks about school even on holidays. Thank you, teachers.",
+        textBn:
+          "ছেলে আগে স্কুলে যেতে চাইতো না, এখন ছুটির দিনেও স্কুলের কথা বলে। শিক্ষকদের ধন্যবাদ।",
+      },
+      {
+        name: "Imran Khan",
+        metaEn: "Father of a Class 10 student",
+        metaBn: "দশম শ্রেণির শিক্ষার্থীর বাবা",
+        textEn:
+          "Test-exam preparation is taken as seriously as board exams — my son's confidence has grown immensely.",
+        textBn:
+          "টেস্ট পরীক্ষার প্রস্তুতি বোর্ড পরীক্ষার মতোই গুরুত্ব দিয়ে নেওয়া হয় — ছেলের আত্মবিশ্বাস অনেক বেড়েছে।",
+      },
+    ],
   },
 };
 

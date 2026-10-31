@@ -28,9 +28,11 @@ export default function AdminShell({ user, pages, children }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const [filter, setFilter] = useState("");
 
-  const pageItems = pages.filter((p) => p.group === "pages");
-  const siteItems = pages.filter((p) => p.group === "site");
+  const match = (label: string) => label.toLowerCase().includes(filter.trim().toLowerCase());
+  const pageItems = pages.filter((p) => p.group === "pages" && match(p.label));
+  const siteItems = pages.filter((p) => p.group === "site" && match(p.label));
 
   async function signOut() {
     setSigningOut(true);
@@ -101,7 +103,15 @@ export default function AdminShell({ user, pages, children }: Props) {
             </button>
           </div>
 
-          <nav className="mt-6 flex-1 space-y-6 overflow-y-auto px-3 pb-4">
+          <nav className="mt-5 flex-1 space-y-6 overflow-y-auto px-3 pb-4">
+            <div className="px-1">
+              <input
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                placeholder="Jump to a page…"
+                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-[12px] text-white placeholder:text-white/30 outline-none focus:border-gold-500/60 focus:bg-white/10"
+              />
+            </div>
             <div>
               <Link href="/admin" className={linkClass("/admin")} onClick={() => setOpen(false)}>
                 <span className="grid h-5 w-5 place-items-center rounded-md bg-white/10 text-[10px]">
@@ -202,23 +212,6 @@ export default function AdminShell({ user, pages, children }: Props) {
               </div>
             </div>
 
-            <div>
-              <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
-                Legacy
-              </p>
-              <div className="space-y-0.5">
-                <Link
-                  href="/admin/legacy"
-                  className={linkClass("/admin/legacy")}
-                  onClick={() => setOpen(false)}
-                >
-                  <span className="grid h-5 w-5 place-items-center rounded-md bg-white/10 text-[10px]">
-                    ⌗
-                  </span>
-                  Old panel
-                </Link>
-              </div>
-            </div>
           </nav>
 
           <div className="border-t border-white/10 p-3">

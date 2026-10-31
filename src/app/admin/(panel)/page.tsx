@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { listContent } from "@/content/store";
+import { listContent, listRecentActivity } from "@/content/store";
 import { dbAvailable, dbPing } from "@/lib/db/client";
 import type { ContentSummary } from "@/content/types";
 
@@ -30,7 +30,11 @@ const statusLabel: Record<ContentSummary["status"], string> = {
 };
 
 export default async function AdminDashboard() {
-  const [pages, ping] = await Promise.all([listContent(), dbPing()]);
+  const [pages, ping, activity] = await Promise.all([
+    listContent(),
+    dbPing(),
+    listRecentActivity(8),
+  ]);
   const healthy = ping.ok;
   const drafts = pages.filter((p) => p.hasDraft).length;
   const published = pages.filter((p) => p.status === "published").length;
@@ -116,10 +120,45 @@ export default async function AdminDashboard() {
       </section>
 
       <section className="rounded-2xl border border-pine-900/10 bg-white p-5 shadow-sm">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-base font-bold text-pine-950">Recent activity</h2>
+          <span className="text-[11px] font-semibold uppercase tracking-wide text-ink/35">
+            audit log
+          </span>
+        </div>
+        {activity.length === 0 ? (
+          <p className="mt-2 text-sm text-ink/50">No changes yet — your first edit will show up here.</p>
+        ) : (
+          <ul className="mt-3 divide-y divide-pine-900/8">
+            {activity.map((item) => (
+              <li key={item.id} className="flex flex-wrap items-center gap-2 py-2 text-xs">
+                <span className="rounded-md bg-pine-900/5 px-1.5 py-0.5 font-bold uppercase tracking-wide text-ink/55">
+                  {item.action}
+                </span>
+                <span className="font-semibold text-pine-950">
+                  {item.rowId || item.tableName}
+                </span>
+                <span className="text-ink/40">{item.tableName}</span>
+                <span className="ml-auto text-ink/40">
+                  {item.who || "system"} ·{" "}
+                  {new Date(item.at ?? Date.now()).toLocaleString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="rounded-2xl border border-pine-900/10 bg-white p-5 shadow-sm">
         <h2 className="font-display text-base font-bold text-pine-950">Everything else</h2>
         <p className="mt-1 text-sm text-ink/60">
-          Notices, media and the admission inbox are fully rebuilt. The old panel is still reachable
-          while the remaining page editors are being migrated.
+          Notices, media, inbox and accounts are all here. Page copy is being moved into the
+          editors one page at a time — Home and Site settings are already live.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
@@ -145,12 +184,6 @@ export default async function AdminDashboard() {
             className="rounded-xl border border-pine-900/20 bg-white px-4 py-2 text-xs font-bold text-pine-950 hover:border-pine-900/40"
           >
             Accounts
-          </Link>
-          <Link
-            href="/admin/legacy"
-            className="rounded-xl border border-pine-900/10 bg-paper px-4 py-2 text-xs font-bold text-ink/50 hover:text-pine-950"
-          >
-            Old panel
           </Link>
         </div>
       </section>

@@ -17,7 +17,9 @@
     "db:seed": "node scripts/db-seed.mjs",
     "db:seed:prod": "node scripts/db-seed.mjs --prod",
     "seed:admin": "node scripts/seed-admin.mjs",
-    "seed:admin:prod": "node scripts/seed-admin.mjs --prod"
+    "seed:admin:prod": "node scripts/seed-admin.mjs --prod",
+    "db:transfer": "node scripts/db-transfer.mjs",
+    "notices:backfill-en": "node scripts/backfill-notices-en.mjs"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.4",

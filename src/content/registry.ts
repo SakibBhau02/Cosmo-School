@@ -73,13 +73,101 @@ export const CONTENT_PAGES: PageSchema[] = [
       {
         id: "sections",
         title: "Section headings",
-        description: "Headings for the home-page sections that already read from the CMS.",
+        description: "Headings for the home-page sections.",
         fields: {
-          leadersTitle: loc("Leadership heading"),
-          programsTitle: loc("Programmes heading"),
-          noticesTitle: loc("Notices heading"),
           galleryTitle: loc("Gallery heading"),
           voicesTitle: loc("Testimonials heading"),
+        },
+      },
+      {
+        id: "heroSlides",
+        title: "Hero slides",
+        description:
+          "Images that rotate behind the headline. Each slide can carry its own two buttons.",
+        fields: {
+          slides: {
+            type: "list",
+            label: "Slides",
+            itemLabel: "Slide",
+            fields: {
+              src: { type: "image", label: "Image URL" },
+              captionEn: text("Caption (English)"),
+              captionBn: text("Caption (Bengali)"),
+              cta: {
+                type: "list",
+                label: "Buttons",
+                itemLabel: "Button",
+                max: 3,
+                fields: {
+                  labelEn: text("Label (English)"),
+                  labelBn: text("Label (Bengali)"),
+                  href: text("Link"),
+                  variant: {
+                    type: "select",
+                    label: "Style",
+                    options: [
+                      { value: "gold", label: "Gold (primary)" },
+                      { value: "outline", label: "Outline (secondary)" },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        id: "stats",
+        title: "Stat counters",
+        description: "The four counters under the hero.",
+        fields: {
+          items: {
+            type: "list",
+            label: "Counters",
+            itemLabel: "Counter",
+            fields: {
+              value: { type: "number", label: "Number", min: 0 },
+              suffix: text("Suffix", { placeholder: "+" }),
+              labelEn: text("Label (English)"),
+              labelBn: text("Label (Bengali)"),
+            },
+          },
+        },
+      },
+      {
+        id: "events",
+        title: "Upcoming events",
+        fields: {
+          items: {
+            type: "list",
+            label: "Events",
+            itemLabel: "Event",
+            fields: {
+              date: text("Date label"),
+              titleEn: text("Title (English)"),
+              titleBn: text("Title (Bengali)"),
+              kind: text("Kind", { placeholder: "Cultural / Exam / Holiday" }),
+            },
+          },
+        },
+      },
+      {
+        id: "testimonials",
+        title: "Guardian testimonials",
+        description: "Shown in the scrolling marquee near the bottom of the home page.",
+        fields: {
+          items: {
+            type: "list",
+            label: "Testimonials",
+            itemLabel: "Testimonial",
+            fields: {
+              name: text("Name"),
+              metaEn: text("Relationship (English)"),
+              metaBn: text("Relationship (Bengali)"),
+              textEn: { type: "textarea", label: "Quote (English)", rows: 3 },
+              textBn: { type: "textarea", label: "Quote (Bengali)", rows: 3 },
+            },
+          },
         },
       },
     ],

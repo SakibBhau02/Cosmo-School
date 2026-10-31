@@ -11,6 +11,8 @@ const r2Host = (() => {
 })();
 
 const nextConfig: NextConfig = {
+  // `docker build` sets NEXT_OUTPUT=standalone; Vercel keeps the default.
+  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
   // data/*.json and drizzle/*.sql are read with fs at runtime. Next's tracer
   // cannot follow `path.join(process.cwd(), ...)`, so without this they are
   // missing from the serverless bundle on Vercel.

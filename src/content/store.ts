@@ -1,8 +1,7 @@
 import "server-only";
 
 import { unstable_cache } from "next/cache";
-import { desc, eq, sql } from "drizzle-orm";
-
+import { and, desc, eq, sql } from "drizzle-orm";
 import { db, dbAvailable } from "@/lib/db/client";
 import { auditLog, contentDocs, contentVersions } from "@/lib/db/schema";
 import { cloneDoc, coerceToShape, mergeDoc } from "./merge";
@@ -181,8 +180,68 @@ export async function listContentVersions(key: string, limit = 10) {
   }
 }
 
-export async function listContent(): Promise<ContentSummary[]> {
-  const rows = dbAvailable()
+/** Load an old published snapshot back into the draft (publish is still manual). */
+export async function restoreVersion(
+  key: string,
+  version: number,
+  user: string,
+): Promise<Record<string, unknown>> {
+  if (!isContentKey(key)) throw new Error(`Unknown content key: ${key}`);
+  if (!dbAvailable()) throw new Error("Database is not configured");
+
+  const rows = await db()
+    .select({ doc: contentVersions.doc })
+    .from(contentVersions)
+    .where(and(eq(contentVersions.key, key), eq(contentVersions.version, version)))
+    .limit(1);
+
+  const snapshot = rows[0]?.doc;
+  if (!snapshot) throw new Error(`Version ${version} not found.`);
+
+  const defaults = CONTENT_DEFAULTS[key];
+  const doc = coerceToShape(defaults, snapshot) as Record<string, unknown>;
+  const now = new Date();
+
+  await db()
+    .insert(contentDocs)
+    .values({ key, draft: doc, updatedBy: user, updatedAt: now })
+    .onConflictDoUpdate({
+      target: contentDocs.key,
+      set: { draft: doc, updatedBy: user, updatedAt: now },
+    });
+
+  await db().insert(auditLog).values({
+    who: user,
+    action: "restore",
+    tableName: "content_docs",
+    rowId: key,
+    after: { version },
+  });
+
+  return doc;
+}
+
+export async function listRecentActivity(limit = 8) {
+  if (!dbAvailable()) return [];
+  try {
+    return await db()
+      .select({
+        id: auditLog.id,
+        who: auditLog.who,
+        action: auditLog.action,
+        tableName: auditLog.tableName,
+        rowId: auditLog.rowId,
+        at: auditLog.at,
+      })
+      .from(auditLog)
+      .orderBy(desc(auditLog.id))
+      .limit(limit);
+  } catch {
+    return [];
+  }
+}
+
+export async function listContent(): Promise<ContentSummary[]> {  const rows = dbAvailable()
     ? await db()
         .select({
           key: contentDocs.key,

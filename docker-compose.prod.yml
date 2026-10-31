@@ -1,0 +1,94 @@
+# Self-hosted stack: Postgres + Next.js + Nginx.
+#
+#   cp .env.production.local .env   # or export the vars your way
+#   docker compose -f docker-compose.prod.yml up -d --build
+#   docker compose -f docker-compose.prod.yml exec app npm run db:migrate:prod
+#
+# Postgres is NOT published on a public interface — only Nginx talks to the app,
+# and only the app talks to Postgres (over the private compose network).
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cosmo}
+      POSTGRES_USER: ${POSTGRES_USER:-cosmo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./deploy/postgres/init:/docker-entrypoint-initdb.d:ro
+    # Local tunables for a 2–4 GB VPS. Raise shared_buffers with RAM.
+    command:
+      - postgres
+      - -c
+      - max_connections=100
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - effective_cache_size=768MB
+      - -c
+      - work_mem=8MB
+      - -c
+      - maintenance_work_mem=64MB
+      - -c
+      - log_min_duration_statement=500
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cosmo} -d ${POSTGRES_DB:-cosmo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [internal]
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      # App talks to Postgres on the private network — never expose 5432 publicly.
+      DATABASE_URL: postgres://${POSTGRES_USER:-cosmo}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-cosmo}
+      DATABASE_URL_MIGRATE: postgres://${POSTGRES_USER:-cosmo}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-cosmo}
+      PG_POOL_MAX: ${PG_POOL_MAX:-10}
+      ADMIN_KEY: ${ADMIN_KEY:?set ADMIN_KEY in .env}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@cosmoschools.org}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+      STORAGE_DRIVER: ${STORAGE_DRIVER:-disk}
+      NEXT_PUBLIC_UPLOADS_URL: ${NEXT_PUBLIC_UPLOADS_URL:-/uploads}
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID:-}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID:-}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY:-}
+      R2_BUCKET: ${R2_BUCKET:-}
+      R2_PUBLIC_BASE_URL: ${R2_PUBLIC_BASE_URL:-}
+    volumes:
+      # Uploaded images survive redeploys when the disk driver is used.
+      - uploads:/app/public/uploads
+    networks: [internal]
+    expose: ["3000"]
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx:/etc/nginx/conf.d:ro
+      - ./deploy/nginx/certs:/etc/nginx/certs:ro
+      - certbot-www:/var/www/certbot:ro
+      - nginx-cache:/var/cache/nginx
+    networks: [internal]
+
+volumes:
+  pgdata:
+  uploads:
+  nginx-cache:
+  certbot-www:
+
+networks:
+  internal:
+    driver: bridge
