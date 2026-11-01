@@ -94,8 +94,10 @@ Migration: `drizzle/0002_content_cms.sql` (idempotent) plus
    `registry.ts` and a `PageSchema` entry to `CONTENT_PAGES` with its sections
    and fields (`text`, `textarea`, `localized`, `localizedList`, `list`,
    `boolean`, `number`, `select`, `image`, `imageList`, `url`, `json`).
-3. **Read it** — call `getPublishedDoc<AboutContent>("about")` from the page
-   (server component) or add it to `/api/cms/site` for a client page.
+3. **Read it** — call `getDocForView<AboutContent>("about")` from the page
+   (server component) or add it to `/api/cms/site` for a client page. Use
+   `getDocForView`, not `getPublishedDoc`, so “Preview draft” works on the new
+   page without extra wiring.
 
 The sidebar and dashboard pick the page up automatically. No API or UI code is
 needed per page.
@@ -196,6 +198,20 @@ removed. Its content is either migrated above or scheduled below.
 
 ## 9. Admin UX & search
 
+- **Preview draft.** Every page editor has **Preview draft ↗**, which sets a
+  short-lived `cosmo_preview` cookie and opens the real public page. While the
+  cookie is set *and* an admin session is valid, `getDocForView()` returns the
+  draft document instead of the published one, so the editor sees the site
+  exactly as it will look after publishing. A dark bar pinned to the bottom of
+  the page says “Draft preview — unpublished changes” and offers
+  *Back to panel* / *View published*. The cookie alone is never enough; without
+  a session the published copy is served.
+- **Knowing what you changed.** Section chips carry an amber dot when that
+  section differs from the published copy, the sticky bar counts the changed
+  sections, each changed field gets an “Edited” label, and section headers show
+  an “Unpublished changes” badge. The section title, its plain-language
+  description and the field count are always visible, so it is clear which part
+  of the page a field belongs to.
 - **Navigation.** The sidebar groups Dashboard → Pages → Content (Gallery,
   Notices, Media, Inquiries) → Settings (Site settings, Accounts). Page rows carry
   a status dot (published / draft / defaults), and the filter box narrows the page

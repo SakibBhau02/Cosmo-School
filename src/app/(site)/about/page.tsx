@@ -1,5 +1,5 @@
 import AboutContent from "./content";
-import { getPublishedDoc } from "@/content/store";
+import { getDocForView } from "@/content/store";
 import type { AboutDoc } from "@/content/defaults/about";
 import { getSiteContent, getWpPage } from "@/lib/cms";
 
@@ -7,7 +7,7 @@ export const metadata = { title: "আমাদের কথা — Cosmo School 
 
 export default async function AboutPage() {
   const [doc, media, ext] = await Promise.all([
-    getPublishedDoc<AboutDoc>("about"),
+    getDocForView<AboutDoc>("about"),
     getSiteContent()
       .then((s) => s.media)
       .catch(() => ({})),

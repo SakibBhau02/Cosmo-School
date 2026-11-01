@@ -1,4 +1,4 @@
-import { getPublishedDoc } from "@/content/store";
+import { getDocForView } from "@/content/store";
 import type { DaylongDoc } from "@/content/defaults/daylong";
 import type { Localized } from "@/content/types";
 
@@ -47,7 +47,7 @@ function routineMilestones(items: DaylongDoc["routine"]["items"]) {
 }
 
 export async function getDaylongPreview(): Promise<DaylongPreview | null> {
-  const doc = await getPublishedDoc<DaylongDoc>("daylong").catch(() => null);
+  const doc = await getDocForView<DaylongDoc>("daylong").catch(() => null);
   if (!doc) return null;
 
   const photos = photosFrom(doc.photos.items);

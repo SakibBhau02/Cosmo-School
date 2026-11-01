@@ -4,6 +4,7 @@ import { unstable_cache } from "next/cache";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { db, dbAvailable } from "@/lib/db/client";
 import { auditLog, contentDocs, contentVersions } from "@/lib/db/schema";
+import { previewMode } from "@/lib/preview";
 import { cloneDoc, coerceToShape, mergeDoc } from "./merge";
 import { CONTENT_DEFAULTS, CONTENT_PAGES, getPageSchema, isContentKey } from "./registry";
 import type { ContentRecord, ContentSummary } from "./types";
@@ -54,12 +55,36 @@ export async function getPublishedDoc<T = unknown>(key: string): Promise<T> {
   return (await cachedPublished(key)) as T;
 }
 
+/**
+ * What a page should render right now: the published document for visitors, or
+ * the editor's draft while an admin is in preview mode. Public pages call this
+ * instead of `getPublishedDoc` so “Preview draft” needs no per-page wiring.
+ */
+export async function getDocForView<T = unknown>(key: string): Promise<T> {
+  if (!isContentKey(key)) throw new Error(`Unknown content key: ${key}`);
+  if (await previewMode()) {
+    const record = await getContentRecord(key);
+    return record.draft as T;
+  }
+  return getPublishedDoc<T>(key);
+}
+
 export async function getGlobalContent() {
   return getPublishedDoc<typeof globalDefaults>("global");
 }
 
 export async function getHomeContent() {
   return getPublishedDoc<typeof homeDefaults>("home");
+}
+
+/** Site settings for the current request (draft while previewing). */
+export async function getGlobalForView() {
+  return getDocForView<typeof globalDefaults>("global");
+}
+
+/** Home document for the current request (draft while previewing). */
+export async function getHomeForView() {
+  return getDocForView<typeof homeDefaults>("home");
 }
 
 /** Draft (what the editor sees) falling back to published, then defaults. */

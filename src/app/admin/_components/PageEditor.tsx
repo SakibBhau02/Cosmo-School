@@ -50,6 +50,21 @@ export default function PageEditor({ page, record, canWrite }: Props) {
   const dirty = useMemo(() => JSON.stringify(doc) !== baseline, [doc, baseline]);
   const busyNow = busy !== null;
 
+  /** Sections that differ from what is currently published. */
+  const changedSections = useMemo(() => {
+    const published = record.published as Record<string, unknown>;
+    const set = new Set<string>();
+    for (const section of page.sections) {
+      if (JSON.stringify(doc[section.id] ?? null) !== JSON.stringify(published[section.id] ?? null)) {
+        set.add(section.id);
+      }
+    }
+    return set;
+  }, [doc, page.sections, record.published]);
+
+  const previewHref = `/api/admin/preview?on=1&next=${encodeURIComponent(page.path)}`;
+  const liveHref = page.path;
+
   useEffect(() => {
     if (!dirty) return;
     const handler = (event: BeforeUnloadEvent) => {
@@ -246,8 +261,17 @@ export default function PageEditor({ page, record, canWrite }: Props) {
             </p>
           </div>
           <div className="flex items-center gap-2 text-xs">
+            <a
+              href={previewHref}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl border border-pine-900/15 bg-white px-3 py-2 font-semibold text-pine-800 hover:border-gold-500"
+              title="Open the site with your unpublished draft"
+            >
+              Preview draft ↗
+            </a>
             <Link
-              href={page.path}
+              href={liveHref}
               target="_blank"
               className="rounded-xl border border-pine-900/15 bg-white px-3 py-2 font-semibold text-pine-800 hover:border-pine-900/30"
             >
@@ -257,21 +281,32 @@ export default function PageEditor({ page, record, canWrite }: Props) {
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
-          {page.sections.map((section, index) => (
-            <button
-              key={section.id}
-              type="button"
-              onClick={() => jumpTo(section.id)}
-              className={[
-                "rounded-full border px-3 py-1 text-[11px] font-semibold transition",
-                openSections.has(section.id)
-                  ? "border-gold-500 bg-gold-500/10 text-pine-950"
-                  : "border-pine-900/10 bg-white text-ink/70 hover:border-gold-500 hover:text-pine-950",
-              ].join(" ")}
-            >
-              {index + 1}. {section.title}
-            </button>
-          ))}
+          {page.sections.map((section, index) => {
+            const changed = changedSections.has(section.id);
+            return (
+              <button
+                key={section.id}
+                type="button"
+                onClick={() => jumpTo(section.id)}
+                aria-current={openSections.has(section.id) ? "true" : undefined}
+                className={[
+                  "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold transition",
+                  openSections.has(section.id)
+                    ? "border-gold-500 bg-gold-500/10 text-pine-950"
+                    : "border-pine-900/10 bg-white text-ink/70 hover:border-gold-500 hover:text-pine-950",
+                ].join(" ")}
+              >
+                <span className="tabular-nums text-ink/50">{index + 1}</span>
+                {section.title}
+                {changed && (
+                  <span
+                    className="h-1.5 w-1.5 rounded-full bg-amber-500"
+                    title="This section has unpublished changes"
+                  />
+                )}
+              </button>
+            );
+          })}
           <span className="ml-auto flex items-center gap-1 text-[11px] font-bold">
             <button
               type="button"
@@ -310,6 +345,11 @@ export default function PageEditor({ page, record, canWrite }: Props) {
               {record.updatedAt ? `Last saved ${formatWhen(record.updatedAt)}` : "Using built-in defaults"}
               {record.updatedBy ? ` · ${record.updatedBy}` : ""}
             </span>
+            {changedSections.size > 0 && (
+              <span className="rounded-full bg-pine-900/5 px-2.5 py-1 font-semibold text-ink/70">
+                {changedSections.size} section{changedSections.size === 1 ? "" : "s"} unpublished
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -408,6 +448,11 @@ export default function PageEditor({ page, record, canWrite }: Props) {
                     {Object.keys(section.fields).length} field
                     {Object.keys(section.fields).length === 1 ? "" : "s"}
                   </span>
+                  {changedSections.has(section.id) && (
+                    <span className="rounded-full bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-amber-700 ring-1 ring-inset ring-amber-600/20">
+                      Unpublished changes
+                    </span>
+                  )}
                 </span>
                 {section.description && (
                   <span className="mt-0.5 block text-xs leading-relaxed text-ink/65">
@@ -425,16 +470,31 @@ export default function PageEditor({ page, record, canWrite }: Props) {
 
             {openSections.has(section.id) && (
               <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                {Object.entries(section.fields).map(([key, field]) => (
-                  <div key={key} className={fullWidth.has(field.type) ? "sm:col-span-2" : undefined}>
-                    <Field
-                      field={field}
-                      disabled={!canWrite}
-                      value={((doc[section.id] as Record<string, unknown> | undefined)?.[key]) ?? ""}
-                      onChange={(value) => setSectionValue(section.id, key, value)}
-                    />
-                  </div>
-                ))}
+                {Object.entries(section.fields).map(([key, field]) => {
+                  const fieldChanged =
+                    JSON.stringify(
+                      (doc[section.id] as Record<string, unknown> | undefined)?.[key] ?? null,
+                    ) !==
+                    JSON.stringify(
+                      (record.published[section.id] as Record<string, unknown> | undefined)?.[key] ?? null,
+                    );
+                  return (
+                    <div key={key} className={fullWidth.has(field.type) ? "sm:col-span-2" : undefined}>
+                      {fieldChanged && (
+                        <p className="mb-1 inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-amber-700">
+                          <span className="h-1 w-1 rounded-full bg-amber-500" aria-hidden />
+                          Edited
+                        </p>
+                      )}
+                      <Field
+                        field={field}
+                        disabled={!canWrite}
+                        value={((doc[section.id] as Record<string, unknown> | undefined)?.[key]) ?? ""}
+                        onChange={(value) => setSectionValue(section.id, key, value)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             )}
           </section>
@@ -443,11 +503,22 @@ export default function PageEditor({ page, record, canWrite }: Props) {
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-pine-900/10 bg-white px-5 py-4 text-xs text-ink/65">
         <span>
-          Ctrl/⌘ + S saves a draft. Publishing is instant and keeps the previous version in History.
+          Ctrl/⌘ + S saves a draft. “Preview draft” shows the site exactly as visitors will see it
+          after publishing.
         </span>
-        <Button onClick={publish} disabled={!canWrite || busyNow}>
-          {busy === "publish" ? "Publishing…" : "Publish changes"}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <a
+            href={previewHref}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-xl border border-pine-900/20 bg-white px-3 py-2 text-xs font-bold text-pine-800 hover:border-gold-500"
+          >
+            Preview draft ↗
+          </a>
+          <Button onClick={publish} disabled={!canWrite || busyNow}>
+            {busy === "publish" ? "Publishing…" : "Publish changes"}
+          </Button>
+        </div>
       </div>
     </div>
   );

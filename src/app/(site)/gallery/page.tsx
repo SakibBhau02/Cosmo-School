@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import GalleryContent from "./content";
-import { getPublishedDoc } from "@/content/store";
+import { getDocForView } from "@/content/store";
 import type { GalleryDoc } from "@/content/defaults/gallery";
 import { galleryFallbackPhotos } from "@/content/defaults/gallery";
 import { listGalleryEvents } from "@/lib/gallery";
@@ -14,7 +14,7 @@ const description =
 
 export async function generateMetadata(): Promise<Metadata> {
   const [doc, albums] = await Promise.all([
-    getPublishedDoc<GalleryDoc>("gallery"),
+    getDocForView<GalleryDoc>("gallery"),
     listGalleryEvents({ publishedOnly: true }),
   ]);
   const heroImage = albums.find((album) => album.cover)?.cover ?? galleryFallbackPhotos[0].image;
@@ -40,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function GalleryPage() {
   const [doc, albums] = await Promise.all([
-    getPublishedDoc<GalleryDoc>("gallery"),
+    getDocForView<GalleryDoc>("gallery"),
     listGalleryEvents({ publishedOnly: true }),
   ]);
 
