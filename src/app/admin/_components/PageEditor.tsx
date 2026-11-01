@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ContentRecord, PageSchema } from "@/content/types";
 import Field from "./Field";
 import { Button } from "./ui";
+import { PREVIEW_CHANNEL, type FocusMessage } from "@/components/PreviewBar";
 
 type Props = {
   page: PageSchema;
@@ -65,6 +66,48 @@ export default function PageEditor({ page, record, canWrite }: Props) {
   const previewHref = `/api/admin/preview?on=1&next=${encodeURIComponent(page.path)}`;
   const liveHref = page.path;
 
+  // Section chips also steer an open preview tab (see PreviewBar).
+  const previewChannel = useRef<BroadcastChannel | null>(null);
+  useEffect(
+    () => () => {
+      previewChannel.current?.close();
+      previewChannel.current = null;
+    },
+    [],
+  );
+
+  const syncPreview = useCallback(
+    (sectionId: string) => {
+      if (typeof BroadcastChannel === "undefined") return;
+      const section = doc[sectionId];
+      const needles: string[] = [];
+      const walk = (value: unknown) => {
+        if (needles.length >= 6) return;
+        if (typeof value === "string") {
+          const text = value.trim();
+          if (text.length >= 6 && !/^https?:\/\//.test(text) && !text.startsWith("/")) needles.push(text);
+          return;
+        }
+        if (Array.isArray(value)) {
+          value.forEach(walk);
+          return;
+        }
+        if (value && typeof value === "object") {
+          Object.values(value as Record<string, unknown>).forEach(walk);
+        }
+      };
+      walk(section);
+      try {
+        previewChannel.current ??= new BroadcastChannel(PREVIEW_CHANNEL);
+        const message: FocusMessage = { type: "focus", id: sectionId, needles };
+        previewChannel.current.postMessage(message);
+      } catch {
+        /* preview tab not open — nothing to do */
+      }
+    },
+    [doc],
+  );
+
   useEffect(() => {
     if (!dirty) return;
     const handler = (event: BeforeUnloadEvent) => {
@@ -103,11 +146,12 @@ export default function PageEditor({ page, record, canWrite }: Props) {
   const jumpTo = useCallback(
     (id: string) => {
       setOpenSections((current) => new Set(current).add(id));
+      syncPreview(id);
       window.requestAnimationFrame(() => {
         document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     },
-    [],
+    [syncPreview],
   );
 
   const reload = useCallback(async () => {
@@ -308,6 +352,9 @@ export default function PageEditor({ page, record, canWrite }: Props) {
             );
           })}
           <span className="ml-auto flex items-center gap-1 text-[11px] font-bold">
+            <span className="mr-2 hidden font-medium text-ink/55 lg:inline">
+              An open <strong className="font-bold">Preview draft</strong> tab follows the section you open.
+            </span>
             <button
               type="button"
               onClick={expandAll}
@@ -352,7 +399,7 @@ export default function PageEditor({ page, record, canWrite }: Props) {
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="hidden items-center gap-2 sm:flex">
             <button
               type="button"
               onClick={openHistory}
@@ -434,7 +481,11 @@ export default function PageEditor({ page, record, canWrite }: Props) {
           >
             <button
               type="button"
-              onClick={() => toggleSection(section.id)}
+              onClick={() => {
+                const willOpen = !openSections.has(section.id);
+                toggleSection(section.id);
+                if (willOpen) syncPreview(section.id);
+              }}
               aria-expanded={openSections.has(section.id)}
               className="flex w-full items-start gap-3 text-left"
             >
@@ -520,6 +571,43 @@ export default function PageEditor({ page, record, canWrite }: Props) {
           </Button>
         </div>
       </div>
+
+      {/* Phones: keep the actions within thumb reach instead of at the top. */}
+      <div className="fixed inset-x-0 bottom-0 z-20 flex items-center gap-2 border-t border-pine-900/10 bg-white px-3 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] sm:hidden">
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-wide ${
+            dirty ? "bg-amber-50 text-amber-700" : "bg-emerald-50 text-emerald-700"
+          }`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${dirty ? "bg-amber-500" : "bg-emerald-500"}`} />
+          {dirty ? "Unsaved" : "Saved"}
+        </span>
+        <a
+          href={previewHref}
+          target="_blank"
+          rel="noreferrer"
+          className="rounded-xl border border-pine-900/20 bg-white px-2.5 py-2 text-[11px] font-bold text-pine-800"
+        >
+          Preview
+        </a>
+        <button
+          type="button"
+          onClick={() => void save()}
+          disabled={!canWrite || busyNow || !dirty}
+          className="ml-auto rounded-xl border border-pine-900/20 bg-white px-3 py-2 text-[11px] font-bold text-pine-950 disabled:opacity-40"
+        >
+          {busy === "save" ? "Saving…" : "Save draft"}
+        </button>
+        <button
+          type="button"
+          onClick={publish}
+          disabled={!canWrite || busyNow}
+          className="rounded-xl bg-pine-950 px-3 py-2 text-[11px] font-bold text-white disabled:opacity-50"
+        >
+          {busy === "publish" ? "…" : "Publish"}
+        </button>
+      </div>
+      <div className="h-14 sm:hidden" aria-hidden />
     </div>
   );
 }

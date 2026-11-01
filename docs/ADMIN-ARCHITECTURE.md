@@ -206,6 +206,14 @@ removed. Its content is either migrated above or scheduled below.
   the page says “Draft preview — unpublished changes” and offers
   *Back to panel* / *View published*. The cookie alone is never enough; without
   a session the published copy is served.
+- **Preview follows the editor.** Section chips are broadcast to an open preview
+  tab (`BroadcastChannel`, no server round trip). The preview scrolls to the
+  matching block and flashes a gold outline, so the two windows stay in step.
+  It uses `[data-cms-section="<id>"]` when a page provides one and otherwise
+  finds the block from the section's own copy, so no page markup has to change.
+- **Phones.** Page editors keep only the status in the sticky header and move
+  Save draft / Publish / Preview into a fixed bottom bar within thumb reach
+  (with safe-area padding for the home indicator).
 - **Knowing what you changed.** Section chips carry an amber dot when that
   section differs from the published copy, the sticky bar counts the changed
   sections, each changed field gets an “Edited” label, and section headers show

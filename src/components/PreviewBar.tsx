@@ -2,16 +2,75 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
+
+export const PREVIEW_CHANNEL = "cosmo-preview";
 
 /**
- * Shown on the public site while “Preview draft” is on. The server only renders
- * it when a signed-in admin has the preview cookie, so the bar doubles as proof
- * of what the editor is looking at — and gives a one-click way back to the
- * panel or to the published version.
+ * Message the editor sends when a section is opened.
+ * `needles` are sample strings from that section, used to find it on the page
+ * when it carries no stable anchor.
+ */
+export type FocusMessage = {
+  type: "focus";
+  id: string;
+  needles: string[];
+};
+
+function flash(element: HTMLElement) {
+  const previous = element.style.boxShadow;
+  element.style.transition = "box-shadow 200ms ease";
+  element.style.boxShadow = "0 0 0 4px rgba(212,160,23,0.55)";
+  window.setTimeout(() => {
+    element.style.boxShadow = previous;
+  }, 1600);
+}
+
+/** Find the block that shows this section, preferring an explicit anchor. */
+function locate(message: FocusMessage): HTMLElement | null {
+  const anchored = document.querySelector<HTMLElement>(`[data-cms-section="${message.id}"]`);
+  if (anchored) return anchored;
+
+  for (const needle of message.needles) {
+    const trimmed = needle.trim();
+    if (trimmed.length < 6) continue;
+    const candidates = Array.from(document.querySelectorAll<HTMLElement>("h1, h2, h3, p, li, span"));
+    const exact = candidates.find((el) => el.textContent?.trim().startsWith(trimmed));
+    const loose = exact ?? candidates.find((el) => el.textContent?.includes(trimmed));
+    if (loose) {
+      return loose.closest<HTMLElement>("section, article") ?? loose;
+    }
+  }
+  return null;
+}
+
+/**
+ * Shown on the public site while “Preview draft” is on, and doubles as the
+ * receiver for the editor's “scroll to this section” messages, so an editor can
+ * keep both tabs in step without touching the page markup.
  */
 export default function PreviewBar() {
   const pathname = usePathname();
   const exitHref = `/api/admin/preview?off=1&next=${encodeURIComponent(pathname || "/")}`;
+  const channelRef = useRef<BroadcastChannel | null>(null);
+
+  useEffect(() => {
+    if (typeof BroadcastChannel === "undefined") return;
+    const channel = new BroadcastChannel(PREVIEW_CHANNEL);
+    channelRef.current = channel;
+    channel.onmessage = (event: MessageEvent<FocusMessage>) => {
+      const data = event.data;
+      if (!data || data.type !== "focus") return;
+      const target = locate(data);
+      if (!target) return;
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      flash(target);
+    };
+    return () => {
+      channel.close();
+      channelRef.current = null;
+    };
+  }, []);
 
   return (
     <>
