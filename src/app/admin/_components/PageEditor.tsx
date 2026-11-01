@@ -17,7 +17,7 @@ type Busy = null | "save" | "publish" | "reset" | "restore";
 
 type VersionRow = { version: number; savedBy: string; savedAt: string | null };
 
-const fullWidth = new Set(["localized", "textarea", "localizedList", "list", "json", "image"]);
+const fullWidth = new Set(["localized", "textarea", "localizedList", "list", "json", "image", "imageList"]);
 
 function formatWhen(value: string | null) {
   if (!value) return "never";

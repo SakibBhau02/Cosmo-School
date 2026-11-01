@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { FieldSchema } from "@/content/types";
 import ImagePicker from "./ImagePicker";
+import ImageListField from "./ImageListField";
 
 type LocalizedValue = { en?: string; bn?: string };
 
@@ -402,7 +403,9 @@ export default function Field({
                         child.type === "textarea" ||
                         child.type === "localizedList" ||
                         child.type === "list" ||
-                        child.type === "json"
+                        child.type === "json" ||
+                        child.type === "image" ||
+                        child.type === "imageList"
                           ? "sm:col-span-2"
                           : ""
                       }
@@ -451,6 +454,20 @@ export default function Field({
             disabled={disabled}
             placeholder={field.placeholder}
             label={field.label}
+          />
+          <Help text={field.help} />
+        </div>
+      );
+
+    case "imageList":
+      return (
+        <div>
+          <ImageListField
+            value={value}
+            onChange={onChange}
+            disabled={disabled}
+            label={field.label}
+            itemLabel={field.itemLabel}
           />
           <Help text={field.help} />
         </div>

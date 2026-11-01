@@ -251,6 +251,15 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Day Long School preview — details and slider photos come from /day-long-school */}
+      {home.daylong?.enabled !== false && (
+        <DaylongPreview
+          preview={site?.daylongPreview ?? null}
+          copy={home.daylong ?? homeDefaults.daylong}
+          resolve={(src) => resolveImg(site?.media, src)}
+        />
+      )}
+
       <FlexibleSchooling />
 
       {/* Programs */}
@@ -416,15 +425,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* Day Long School preview — copy and photo come from /day-long-school */}
-      {home.daylong?.enabled !== false && (
-        <DaylongPreview
-          preview={site?.daylongPreview ?? null}
-          copy={home.daylong ?? homeDefaults.daylong}
-          resolve={(src) => resolveImg(site?.media, src)}
-        />
-      )}
 
       {/* Guardian voices */}
       <section className="mx-auto max-w-7xl px-4 pt-20">

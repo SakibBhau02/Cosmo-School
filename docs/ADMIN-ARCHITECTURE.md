@@ -93,7 +93,7 @@ Migration: `drizzle/0002_content_cms.sql` (idempotent) plus
 2. **Register it** — add the default to `CONTENT_DEFAULTS` in
    `registry.ts` and a `PageSchema` entry to `CONTENT_PAGES` with its sections
    and fields (`text`, `textarea`, `localized`, `localizedList`, `list`,
-   `boolean`, `number`, `select`, `image`, `url`, `json`).
+   `boolean`, `number`, `select`, `image`, `imageList`, `url`, `json`).
 3. **Read it** — call `getPublishedDoc<AboutContent>("about")` from the page
    (server component) or add it to `/api/cms/site` for a client page.
 
@@ -124,10 +124,18 @@ Editable today:
   (headline, deadline, bullets, helpline, fine print, on/off switch), the
   “Our Levels” cards (title, age badge in EN + BN, description, image, link),
   a **Day Long School preview** and the gallery/testimonial headings.
-  The preview card reads its name, tagline, age, timing, photo and the three
-  highlights live from the published Day-Long School page, so editing that page
-  updates the home page too. Only the framing (eyebrow, optional heading/intro
-  override, photo override, button labels, on/off) lives on Home.
+  The preview sits directly under “Messages from Our Leaders” and is the full
+  section, not a teaser: heading, age/time/seats badges, three highlights, the
+  “A Day at Cosmo” timeline and a **photo slider** that advances every 5 seconds
+  (pauses on hover/focus, arrows and dots for manual control, off for
+  `prefers-reduced-motion`).
+  Name, tagline, age, timing, routine, highlights and the fallback photos are
+  read live from the published Day-Long School page, so editing that page
+  updates the home page too. Its own **Slider photos** list (multi-file upload,
+  drag-and-drop, reorder, EN/BN captions) takes priority when filled; leave it
+  empty to use the Day-Long page photos. Only the framing (eyebrow, optional
+  heading/intro override, button labels, timeline on/off, section on/off) lives
+  on Home.
 - **Site settings** — identity, contact, social links, every admission banner
   (header badge, hero badge, footer strip, apply label, helpline) and SEO
   defaults.

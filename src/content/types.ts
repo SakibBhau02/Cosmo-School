@@ -19,6 +19,7 @@ export type FieldType =
   | "boolean"
   | "select"
   | "image"
+  | "imageList"
   | "url"
   | "color"
   | "strings"

@@ -54,6 +54,24 @@ function checkField(path: string, field: FieldSchema, value: unknown) {
       });
       break;
     }
+    case "imageList": {
+      // An image list may start empty (it falls back to another photo set).
+      if (!Array.isArray(value)) {
+        problems.push(`${path}: expected an array of photos`);
+        break;
+      }
+      value.forEach((row, i) => {
+        if (!isObj(row)) {
+          problems.push(`${path}[${i}]: expected an object`);
+          return;
+        }
+        if (typeof row.image !== "string") problems.push(`${path}[${i}].image: expected string`);
+        for (const key of ["captionEn", "captionBn"]) {
+          if (typeof row[key] !== "string") problems.push(`${path}[${i}].${key}: expected string`);
+        }
+      });
+      break;
+    }
     case "json":
       break;
     default:

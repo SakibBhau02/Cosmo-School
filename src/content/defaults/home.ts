@@ -81,7 +81,8 @@ export const homeDefaults = {
     ctaHref: "/day-long-school",
     visitLabel: l("Book a campus visit", "ক্যাম্পাস ভিজিট বুক করুন"),
     visitHref: "/day-long-school#visit",
-    photo: "",
+    showRoutine: true,
+    photos: [] as { image: string; captionEn: string; captionBn: string }[],
   },
   heroSlides: {
     slides: heroConfig.slides.map((slide) => ({

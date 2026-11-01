@@ -125,13 +125,19 @@ export const CONTENT_PAGES: PageSchema[] = [
         id: "daylong",
         title: "Day Long School preview",
         description:
-          "A preview of the Day Long School page. The name, tagline, age, timing, photo and the three highlights are read live from that page — edit them under Pages → Day-Long School. Leave the title and intro blank to use the Day Long page wording.",
+          "The photo slider under “Messages from Our Leaders”. The name, tagline, age, timing, routine and highlights are read live from the Day-Long School page — edit them under Pages → Day-Long School. Upload photos here for this slider; leave the list empty to use the Day-Long page photos.",
         fields: {
           enabled: bool("Show this section on the home page"),
           eyebrow: loc("Eyebrow (small label)"),
           title: loc("Heading override (optional)"),
           intro: locArea("Intro override (optional)"),
-          photo: img("Photo override (optional)"),
+          photos: {
+            type: "imageList",
+            label: "Slider photos",
+            itemLabel: "Photo",
+            help: "Drop several photos at once. They slide automatically on the home page. Empty = use the Day-Long School page photos.",
+          },
+          showRoutine: bool("Show the “a day at Cosmo” timeline"),
           ctaLabel: loc("Main button label"),
           ctaHref: text("Main button link", { placeholder: "/day-long-school" }),
           visitLabel: loc("Visit button label"),

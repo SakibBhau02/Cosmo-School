@@ -7,8 +7,11 @@ import type { Localized } from "@/content/types";
  *
  * The home preview never keeps its own copy of the day-long copy: it renders
  * whatever is published on /day-long-school, so editing that page updates the
- * home page too. Only the framing (eyebrow, button labels) is edited on Home.
+ * home page too. The home document can override the framing (heading, intro,
+ * button labels) and add its own slider photos.
  */
+export type DaylongPhoto = { image: string; caption: Localized };
+
 export type DaylongPreview = {
   name: Localized;
   tagline: Localized;
@@ -17,23 +20,38 @@ export type DaylongPreview = {
   seats: Localized;
   photo: string;
   photoCaption: Localized;
+  photos: DaylongPhoto[];
   highlights: { icon: string; title: Localized; desc: Localized }[];
+  routine: { time: Localized; title: Localized }[];
+  routineTitle: Localized;
   href: string;
   visitHref: string;
 };
 
 const empty: Localized = { en: "", bn: "" };
 
-function firstPhoto(items: DaylongDoc["photos"]["items"]) {
-  const withImage = items.find((item) => Boolean(item.image?.trim()));
-  return withImage ?? { image: "", caption: empty };
+function photosFrom(items: DaylongDoc["photos"]["items"]): DaylongPhoto[] {
+  return items
+    .filter((item) => Boolean(item.image?.trim()))
+    .map((item) => ({ image: item.image, caption: item.caption ?? empty }));
+}
+
+/** Four milestones that read well as a summary strip, spread across the day. */
+function routineMilestones(items: DaylongDoc["routine"]["items"]) {
+  if (items.length <= 4) return items.map((item) => ({ time: item.time, title: item.title }));
+  const step = (items.length - 1) / 3;
+  return [0, 1, 2, 3].map((i) => {
+    const item = items[Math.round(i * step)];
+    return { time: item.time, title: item.title };
+  });
 }
 
 export async function getDaylongPreview(): Promise<DaylongPreview | null> {
   const doc = await getPublishedDoc<DaylongDoc>("daylong").catch(() => null);
   if (!doc) return null;
 
-  const photo = firstPhoto(doc.photos.items);
+  const photos = photosFrom(doc.photos.items);
+  const first = photos[0] ?? { image: "", caption: empty };
 
   return {
     name: doc.hero.name,
@@ -41,14 +59,17 @@ export async function getDaylongPreview(): Promise<DaylongPreview | null> {
     age: doc.hero.badgeAge,
     time: doc.hero.time,
     seats: doc.hero.seats,
-    photo: photo.image,
-    photoCaption: photo.caption,
+    photo: first.image,
+    photoCaption: first.caption,
+    photos,
     // The first three "features" are the strongest parent-facing reasons.
     highlights: doc.features.items.slice(0, 3).map((item) => ({
       icon: item.icon,
       title: item.title,
       desc: item.desc,
     })),
+    routine: routineMilestones(doc.routine.items),
+    routineTitle: doc.routine.title,
     href: "/day-long-school",
     visitHref: "/day-long-school#visit",
   };
