@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { desc, eq } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 
 import { authorizeAdmin, hashPasswordSync } from "@/lib/auth";
 import { db, dbAvailable } from "@/lib/db/client";

@@ -72,6 +72,17 @@ export const homeDefaults = {
       href: "/academics",
     })),
   },
+  daylong: {
+    enabled: true,
+    eyebrow: l("Day Long School", "ডে লং স্কুল"),
+    title: l("", ""),
+    intro: l("", ""),
+    ctaLabel: l("Explore Day Long School", "ডে লং স্কুল সম্পর্কে জানুন"),
+    ctaHref: "/day-long-school",
+    visitLabel: l("Book a campus visit", "ক্যাম্পাস ভিজিট বুক করুন"),
+    visitHref: "/day-long-school#visit",
+    photo: "",
+  },
   heroSlides: {
     slides: heroConfig.slides.map((slide) => ({
       src: slide.src,

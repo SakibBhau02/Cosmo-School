@@ -122,8 +122,12 @@ Editable today:
 - **Home** — hero copy/CTAs/video, hero slides with per-slide buttons, stat
   counters, upcoming events, guardian testimonials, the admission offer block
   (headline, deadline, bullets, helpline, fine print, on/off switch), the
-  “Our Levels” cards (title, age badge in EN + BN, description, image, link) and
-  the gallery/testimonial headings.
+  “Our Levels” cards (title, age badge in EN + BN, description, image, link),
+  a **Day Long School preview** and the gallery/testimonial headings.
+  The preview card reads its name, tagline, age, timing, photo and the three
+  highlights live from the published Day-Long School page, so editing that page
+  updates the home page too. Only the framing (eyebrow, optional heading/intro
+  override, photo override, button labels, on/off) lives on Home.
 - **Site settings** — identity, contact, social links, every admission banner
   (header badge, hero badge, footer strip, apply label, helpline) and SEO
   defaults.
@@ -192,9 +196,18 @@ removed. Its content is either migrated above or scheduled below.
 - **Long editors.** Page editors with more than four sections open the first
   section and collapse the rest. Section chips jump and expand, and “Expand all”
   / “Collapse all” are one click. Save/publish stay in the sticky bar.
-- **Uploads.** Gallery albums accept drag-and-drop batches (40 at a time) and
-  media-library imports. The Media library also accepts batches. Every photo keeps
-  separate English and Bengali alt text and caption for accessibility.
+- **Uploads.** Every image field can take a file directly (camera or gallery on
+  a phone), drag-and-drop, the media library, or a pasted URL. The browser
+  downscales to 2000 px and re-encodes to WebP before sending, so large phone
+  photos still upload quickly on mobile data; the server then runs `sharp`
+  (EXIF rotation, 1600 px max, WebP quality 82, metadata stripped) and stores the
+  result in Cloudflare R2 (`STORAGE_DRIVER=r2`, `R2_*`). Gallery albums and the
+  media library both accept batches. Deleting a row also deletes the object.
+- **R2 configuration.** `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`,
+  `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_BASE_URL`, plus
+  `STORAGE_DRIVER=r2`. Without them the driver falls back to local disk
+  (`public/uploads`) so development still works; `/admin/media` shows which
+  driver is active.
 - **Search / AEO / GEO.** Public gallery pages return canonical URLs, Open Graph
   and Twitter cards, `ImageGallery` and `BreadcrumbList` JSON-LD, semantic
   `<figure>` / `<figcaption>` markup, descriptive alt text and visible event

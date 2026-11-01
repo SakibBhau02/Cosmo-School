@@ -114,6 +114,9 @@ export default function InquiriesInbox({
             </button>
           ))}
         </div>
+        {/* A real anchor is required here: the browser must follow the link and
+            start a file download, which `next/link` cannot do for an API route. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a
           href="/api/admin/inquiries?format=csv"
           className="rounded-xl border border-pine-900/20 bg-white px-4 py-2 text-xs font-bold text-pine-950 hover:border-pine-900/40"

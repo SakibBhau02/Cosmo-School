@@ -15,10 +15,26 @@ export type StoredFile = {
 };
 
 const MAX_BYTES = 5 * 1024 * 1024;
-const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+const ALLOWED = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/avif",
+  // Browsers label HEIC/HEIF either way; sharp decodes it only when libheif
+  // has HEVC support. We accept the mime here and fail with a clear message
+  // if the decoder cannot read it.
+  "image/heic",
+  "image/heif",
+]);
 
 export function validateImage(mime: string, bytes: number): string | null {
-  if (!ALLOWED.has(mime)) return "শুধু JPG/PNG/WebP/GIF ছবি আপলোড করা যায়।";
+  if (!mime || !mime.startsWith("image/")) {
+    return "শুধু ছবি আপলোড করা যায় (JPG, PNG, WebP, GIF or AVIF)।";
+  }
+  if (!ALLOWED.has(mime) && mime !== "image/jpg") {
+    return `এই ফরম্যাট সমর্থিত নয় (${mime})। JPG, PNG, WebP, GIF বা AVIF ব্যবহার করুন।`;
+  }
   if (bytes > MAX_BYTES) return "ছবি ৫MB-এর বেশি হতে পারবে না।";
   return null;
 }
@@ -40,11 +56,24 @@ export async function storeImage(buf: Buffer, origName: string): Promise<StoredF
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const file = `${crypto.randomBytes(8).toString("hex")}.webp`;
 
-  const meta = await sharp(buf, { animated: false })
-    .rotate()
-    .resize({ width: 1600, withoutEnlargement: true })
-    .webp({ quality: 82 })
-    .toBuffer({ resolveWithObject: true });
+  let meta: { data: Buffer; info: { width: number; height: number } };
+  try {
+    meta = await sharp(buf, { animated: false, limitInputPixels: 60_000_000 })
+      // `rotate()` honours EXIF orientation, then metadata is dropped because
+      // we re-encode — no GPS or camera data ends up on the public CDN.
+      .rotate()
+      .resize({ width: 1600, withoutEnlargement: true })
+      .webp({ quality: 82, effort: 4 })
+      .toBuffer({ resolveWithObject: true });
+  } catch (e) {
+    const message = (e as Error).message ?? "";
+    if (/heif|heic/i.test(message)) {
+      throw new Error(
+        "iPhone-এর HEIC ছবি সার্ভারে রূপান্তর করা যায়নি। ফোনের ক্যামেরা সেটিংসে “Most Compatible” বেছে নিন, অথবা ছবিটি JPG হিসেবে আপলোড করুন।",
+      );
+    }
+    throw new Error(`ছবিটি পড়া যায়নি — অন্য ফাইল চেষ্টা করুন। (${message.slice(0, 120)})`);
+  }
 
   void origName;
   const dims = { width: meta.info.width, height: meta.info.height, size: meta.data.length };

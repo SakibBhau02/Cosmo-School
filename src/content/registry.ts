@@ -122,6 +122,23 @@ export const CONTENT_PAGES: PageSchema[] = [
         },
       },
       {
+        id: "daylong",
+        title: "Day Long School preview",
+        description:
+          "A preview of the Day Long School page. The name, tagline, age, timing, photo and the three highlights are read live from that page — edit them under Pages → Day-Long School. Leave the title and intro blank to use the Day Long page wording.",
+        fields: {
+          enabled: bool("Show this section on the home page"),
+          eyebrow: loc("Eyebrow (small label)"),
+          title: loc("Heading override (optional)"),
+          intro: locArea("Intro override (optional)"),
+          photo: img("Photo override (optional)"),
+          ctaLabel: loc("Main button label"),
+          ctaHref: text("Main button link", { placeholder: "/day-long-school" }),
+          visitLabel: loc("Visit button label"),
+          visitHref: text("Visit button link", { placeholder: "/day-long-school#visit" }),
+        },
+      },
+      {
         id: "heroSlides",
         title: "Hero slides",
         description:

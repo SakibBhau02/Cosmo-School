@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 
 import { Badge, Button, Card, EmptyState, Input, Label, StatusMessage } from "./ui";
+import { uploadImages } from "@/lib/clientUpload";
 
 export type MediaRow = {
   id: number;
@@ -68,18 +69,16 @@ export default function MediaManager({
     setError(null);
     setMessage(null);
     try {
-      const form = new FormData();
-      for (const file of files) form.append("files", file);
-      form.set("altEn", altEn);
-      form.set("altBn", altBn);
-      const res = await fetch("/api/admin/media", { method: "POST", body: form });
-      const data = (await res.json().catch(() => ({}))) as { message?: string; error?: string };
-      if (!res.ok) throw new Error(data.message ?? data.error ?? "Upload failed.");
+      const rows = await uploadImages(files, { altEn, altBn });
       if (fileRef.current) fileRef.current.value = "";
       setAltEn("");
       setAltBn("");
       await reload();
-      setMessage(`${files.length} image${files.length === 1 ? "" : "s"} uploaded.`);
+      setMessage(
+        `${rows.length} image${rows.length === 1 ? "" : "s"} uploaded${
+          rows[0]?.width ? ` (${rows[0].width}×${rows[0].height} WebP)` : ""
+        }.`,
+      );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed.");
     } finally {

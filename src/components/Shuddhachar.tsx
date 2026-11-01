@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import { useLang, t } from "./Language";
 
 // 15 Shuddhachar — one shows at a time. The default index is derived from
@@ -28,7 +28,13 @@ const HALF_DAY = 12 * 3600 * 1000;
 
 export default function Shuddhachar() {
   const { lang } = useLang();
-  const auto = useMemo(() => Math.floor(Date.now() / HALF_DAY) % QUOTES.length, []);
+  // The clock is an external system: read the time-based quote through a store
+  // so nothing impure runs during render and hydration still starts from 0.
+  const auto = useSyncExternalStore(
+    () => () => {},
+    () => Math.floor(Date.now() / HALF_DAY) % QUOTES.length,
+    () => 0,
+  );
   const [manual, setManual] = useState<number | null>(null);
   const touchX = useRef<number | null>(null);
   const idx = manual ?? auto;

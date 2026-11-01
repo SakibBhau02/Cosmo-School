@@ -9,9 +9,7 @@ import { Counter, Eyebrow, Reveal } from "@/components/Motion";
 import InquiryForm from "@/components/InquiryForm";
 import FlexibleSchooling from "@/components/FlexibleSchooling";
 import {
-  branch,
   clubs as seedClubs,
-  daycare,
   events as seedEvents,
   gallery as seedGallery,
   heroConfig,
@@ -23,9 +21,11 @@ import {
   testimonials as seedVoices,
 } from "@/config/site";
 import LeaderPhoto from "@/components/LeaderPhoto";
+import DaylongPreview from "@/components/DaylongPreview";
 import type { SiteContent } from "@/lib/cms";
 import type { CmsNotice } from "@/lib/cms";
 import type { GalleryEvent } from "@/lib/gallery";
+import type { DaylongPreview as DaylongPreviewData } from "@/lib/daylongPreview";
 import { resolveImg } from "@/lib/img";
 import TestimonialMarquee from "@/components/TestimonialMarquee";
 import Shuddhachar from "@/components/Shuddhachar";
@@ -36,6 +36,7 @@ import { globalDefaults } from "@/content/defaults/global";
 
 type SitePayload = SiteContent & {
   galleryAlbums?: GalleryEvent[];
+  daylongPreview?: DaylongPreviewData | null;
   content?: {
     global: typeof globalDefaults | null;
     home: typeof homeDefaults | null;
@@ -416,34 +417,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Day Long School highlight */}
-      <section className="mx-auto max-w-7xl px-4 pt-20">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-[2rem] bg-pine-950 text-white p-8 sm:p-12">
-            <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-gold-500/20 blur-3xl" />
-            <div className="relative mx-auto max-w-3xl text-center">
-              <span className="inline-block rounded-full bg-gold-500 text-pine-950 text-xs font-bold px-4 py-1.5">
-                🍼 {daycare.nameEn}
-              </span>
-              <h2 className="font-display text-3xl sm:text-4xl font-bold mt-4">
-                {t(lang, daycare.nameBn, daycare.nameEn)} — {t(lang, daycare.taglineBn, daycare.taglineEn)}
-              </h2>
-              <p className="mt-3 text-white/75">
-                {t(lang, daycare.ageBn, daycare.ageEn)} • {t(lang, daycare.timeBn, daycare.timeEn)}।{" "}
-                {t(lang, "সিসি মনিটরিং, পুষ্টিকর খাবার, হোমওয়ার্ক সহায়তা ও দৈনিক ছবিসহ আপডেট।", "CCTV monitoring, nutritious meals, homework support & daily photo updates.")}
-              </p>
-              <div className="mt-6 flex flex-wrap justify-center gap-3">
-                <Link href="/day-long-school" className="rounded-full bg-gold-500 px-6 py-3 font-bold text-pine-950 hover:bg-gold-300 transition">
-                  {t(lang, "বিস্তারিত দেখুন", "See details")}
-                </Link>
-                <Link href="/day-long-school#visit" className="rounded-full border border-white/50 px-6 py-3 font-bold hover:bg-white hover:text-pine-950 transition">
-                  {t(lang, "ক্যাম্পাস ভিজিট করুন", "Visit Campus")}
-                </Link>
-              </div>
-            </div>
-          </div>
-        </Reveal>
-      </section>
+      {/* Day Long School preview — copy and photo come from /day-long-school */}
+      {home.daylong?.enabled !== false && (
+        <DaylongPreview
+          preview={site?.daylongPreview ?? null}
+          copy={home.daylong ?? homeDefaults.daylong}
+          resolve={(src) => resolveImg(site?.media, src)}
+        />
+      )}
 
       {/* Guardian voices */}
       <section className="mx-auto max-w-7xl px-4 pt-20">

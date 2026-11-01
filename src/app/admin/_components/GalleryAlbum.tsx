@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { GalleryEvent, GalleryPhoto } from "@/lib/gallery";
+import { humanBytes, prepareBatch } from "@/lib/clientImage";
 import { Badge, Button, Input, Label, Select, StatusMessage, Textarea } from "./ui";
 
 type MediaRow = {
@@ -222,8 +223,9 @@ export default function GalleryAlbum({
     setError(null);
     setMessage(null);
     try {
+      const { parts, before, after } = await prepareBatch(list);
       const form = new FormData();
-      for (const file of list) form.append("files", file);
+      for (const part of parts) form.append("files", part.blob, part.name);
       const res = await fetch(`/api/admin/gallery/events/${event.id}/photos`, {
         method: "POST",
         body: form,
@@ -232,7 +234,10 @@ export default function GalleryAlbum({
       if (!res.ok || !data.photos) throw new Error(data.error ?? "Upload failed.");
       setPhotos((current) => [...current, ...(data.photos ?? [])]);
       if (fileRef.current) fileRef.current.value = "";
-      setMessage(`${data.photos.length} photo${data.photos.length === 1 ? "" : "s"} uploaded.`);
+      const saved = before > after ? ` · optimised ${humanBytes(before)} → ${humanBytes(after)}` : "";
+      setMessage(
+        `${data.photos.length} photo${data.photos.length === 1 ? "" : "s"} uploaded${saved}.`,
+      );
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed.");

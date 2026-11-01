@@ -1,10 +1,18 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 
 export type Lang = "bn" | "en";
 
 const STORE_KEY = "cosmo-lang";
+const STORE_EVENT = "cosmo-lang-change";
 
 const Ctx = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({
   lang: "en",
@@ -19,25 +27,33 @@ function readStored(): Lang {
   }
 }
 
+function subscribe(onChange: () => void) {
+  window.addEventListener(STORE_EVENT, onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener(STORE_EVENT, onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  // English is the site default. The SSR snapshot is always "en" (avoids
-  // hydration mismatch); a visitor's stored choice is applied after mount.
-  const [lang, setLangState] = useState<Lang>("en");
+  // English is the site default and the server snapshot, so hydration always
+  // matches. The visitor's stored choice is read as an external store, which
+  // also keeps other tabs in sync without a setState-in-effect round trip.
+  const lang = useSyncExternalStore(subscribe, readStored, () => "en" as Lang);
 
   useEffect(() => {
-    setLangState(readStored());
-  }, []);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(STORE_KEY, lang);
-    } catch {
-      /* storage unavailable — session-only */
-    }
     document.documentElement.lang = lang === "bn" ? "bn" : "en";
   }, [lang]);
 
-  const setLang = useCallback((l: Lang) => setLangState(l), []);
+  const setLang = useCallback((l: Lang) => {
+    try {
+      window.localStorage.setItem(STORE_KEY, l);
+    } catch {
+      /* storage unavailable — session-only */
+    }
+    window.dispatchEvent(new Event(STORE_EVENT));
+  }, []);
 
   return <Ctx.Provider value={{ lang, setLang }}>{children}</Ctx.Provider>;
 }
