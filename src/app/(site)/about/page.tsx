@@ -1,14 +1,17 @@
 import AboutContent from "./content";
+import { getPublishedDoc } from "@/content/store";
+import type { AboutDoc } from "@/content/defaults/about";
 import { getSiteContent, getWpPage } from "@/lib/cms";
 
 export const metadata = { title: "আমাদের কথা — Cosmo School Banasree" };
 
 export default async function AboutPage() {
-  const [media, ext] = await Promise.all([
+  const [doc, media, ext] = await Promise.all([
+    getPublishedDoc<AboutDoc>("about"),
     getSiteContent()
       .then((s) => s.media)
       .catch(() => ({})),
     getWpPage("about-extended").catch(() => null),
   ]);
-  return <AboutContent media={media} ext={ext} />;
+  return <AboutContent doc={doc} media={media} ext={ext} />;
 }

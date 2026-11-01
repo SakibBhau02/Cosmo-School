@@ -19,13 +19,13 @@ export function PageHeader({
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
         {eyebrow && (
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold-500">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-pine-700">
             {eyebrow}
           </p>
         )}
         <h1 className="mt-1 font-display text-3xl font-bold text-pine-950">{title}</h1>
         {description && (
-          <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink/60">{description}</p>
+          <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink/70">{description}</p>
         )}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -54,7 +54,7 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 const buttonStyles: Record<NonNullable<ButtonProps["variant"]>, string> = {
   primary: "bg-pine-950 text-white hover:bg-pine-900 shadow",
   secondary: "border border-pine-900/20 bg-white text-pine-950 hover:border-pine-900/40",
-  ghost: "text-ink/60 hover:bg-pine-900/5 hover:text-pine-950",
+  ghost: "text-ink/70 hover:bg-pine-900/5 hover:text-pine-950",
   danger: "border border-red-200 bg-red-50 text-red-700 hover:bg-red-100",
 };
 
@@ -69,14 +69,14 @@ export function Button({ variant = "primary", className = "", ...props }: Button
 
 export function Label({ children }: { children: ReactNode }) {
   return (
-    <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.12em] text-ink/55">
+    <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.12em] text-ink/70">
       {children}
     </span>
   );
 }
 
 export const fieldClass =
-  "w-full rounded-xl border border-pine-900/15 bg-white px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-ink/30 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 disabled:bg-paper disabled:text-ink/40";
+  "w-full rounded-xl border border-pine-900/15 bg-white px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-ink/70 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 disabled:bg-paper disabled:text-ink/65";
 
 export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${fieldClass} ${props.className ?? ""}`} />;
@@ -114,7 +114,7 @@ export function EmptyState({ title, hint }: { title: string; hint?: string }) {
   return (
     <div className="rounded-2xl border border-dashed border-pine-900/15 bg-white/60 px-6 py-12 text-center">
       <p className="font-display text-base font-bold text-pine-950">{title}</p>
-      {hint && <p className="mt-1 text-sm text-ink/50">{hint}</p>}
+      {hint && <p className="mt-1 text-sm text-ink/65">{hint}</p>}
     </div>
   );
 }

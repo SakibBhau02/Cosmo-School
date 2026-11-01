@@ -59,9 +59,9 @@ export default function MediaManager({
   }
 
   async function upload() {
-    const file = fileRef.current?.files?.[0];
-    if (!file) {
-      setError("Choose an image first.");
+    const files = Array.from(fileRef.current?.files ?? []);
+    if (files.length === 0) {
+      setError("Choose at least one image.");
       return;
     }
     setBusy(true);
@@ -69,7 +69,7 @@ export default function MediaManager({
     setMessage(null);
     try {
       const form = new FormData();
-      form.set("file", file);
+      for (const file of files) form.append("files", file);
       form.set("altEn", altEn);
       form.set("altBn", altBn);
       const res = await fetch("/api/admin/media", { method: "POST", body: form });
@@ -79,7 +79,7 @@ export default function MediaManager({
       setAltEn("");
       setAltBn("");
       await reload();
-      setMessage("Image uploaded.");
+      setMessage(`${files.length} image${files.length === 1 ? "" : "s"} uploaded.`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed.");
     } finally {
@@ -135,33 +135,62 @@ export default function MediaManager({
   return (
     <div className="space-y-5">
       <Card className="p-5">
-        <h2 className="font-display text-base font-bold text-pine-950">Upload an image</h2>
-        <p className="mt-1 text-xs text-ink/50">
-          JPG, PNG, WebP or GIF up to 5 MB. Everything is converted to WebP at 1600 px wide.
-        </p>
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <label className="block sm:col-span-3">
-            <Label>File</Label>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/png,image/jpeg,image/webp,image/gif"
-              className="w-full rounded-xl border border-pine-900/15 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-pine-950 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white"
-            />
-          </label>
-          <label className="block">
-            <Label>Alt text (English)</Label>
-            <Input value={altEn} onChange={(e) => setAltEn(e.target.value)} placeholder="Students in the science lab" />
-          </label>
-          <label className="block">
-            <Label>Alt text (Bengali)</Label>
-            <Input value={altBn} onChange={(e) => setAltBn(e.target.value)} />
-          </label>
-          <div className="flex items-end">
-            <Button onClick={upload} disabled={!canWrite || busy} className="w-full">
-              {busy ? "Working…" : "Upload"}
-            </Button>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div>
+            <h2 className="font-display text-base font-bold text-pine-950">Upload images</h2>
+            <p className="mt-1 text-xs text-ink/65">
+              JPG, PNG, WebP or GIF · up to 5 MB each · many files at once. Everything becomes WebP at
+              1600 px wide. Leave alt text empty and the file name is used.
+            </p>
           </div>
+          <Badge tone="slate">{items.length} in library</Badge>
+        </div>
+        <label
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.currentTarget.classList.add("border-gold-500", "bg-gold-500/5");
+          }}
+          onDragLeave={(e) => {
+            e.currentTarget.classList.remove("border-gold-500", "bg-gold-500/5");
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.currentTarget.classList.remove("border-gold-500", "bg-gold-500/5");
+            if (fileRef.current && e.dataTransfer.files.length) {
+              fileRef.current.files = e.dataTransfer.files;
+              void upload();
+            }
+          }}
+          className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-pine-900/20 bg-paper/40 px-4 py-7 text-center transition hover:border-gold-500 hover:bg-gold-500/5"
+        >
+          <input
+            ref={fileRef}
+            type="file"
+            multiple
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            className="sr-only"
+            disabled={!canWrite || busy}
+          />
+          <span className="font-display text-sm font-bold text-pine-950">
+            {busy ? "Uploading…" : "Drop images here, or click to choose"}
+          </span>
+          <span className="mt-1 text-[11px] text-ink/65">Up to 30 files per upload</span>
+        </label>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <label className="block">
+            <Label>Alt text for this batch (English)</Label>
+            <Input value={altEn} onChange={(e) => setAltEn(e.target.value)} placeholder="Optional — file name if empty" />
+          </label>
+          <label className="block">
+            <Label>Alt text for this batch (Bengali)</Label>
+            <Input value={altBn} onChange={(e) => setAltBn(e.target.value)} placeholder="ঐচ্ছিক" />
+          </label>
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          <Button onClick={() => void upload()} disabled={!canWrite || busy}>
+            {busy ? "Working…" : "Upload selected"}
+          </Button>
+          <span className="text-[11px] text-ink/65">Then edit individual alt text in the grid below.</span>
         </div>
       </Card>
 
@@ -190,8 +219,8 @@ export default function MediaManager({
                 className="h-40 w-full object-cover bg-paper"
               />
               <div className="space-y-2 p-3">
-                <p className="truncate font-mono text-[11px] text-ink/45">{item.filePath}</p>
-                <p className="text-[11px] text-ink/50">
+                <p className="truncate font-mono text-[11px] text-ink/65">{item.filePath}</p>
+                <p className="text-[11px] text-ink/65">
                   {item.width && item.height ? `${item.width}×${item.height} · ` : ""}
                   {humanSize(item.size)}
                 </p>
@@ -219,7 +248,7 @@ export default function MediaManager({
                   </div>
                 ) : (
                   <>
-                    <p className="line-clamp-2 text-xs text-ink/60">
+                    <p className="line-clamp-2 text-xs text-ink/70">
                       {item.altEn || item.altBn || (
                         <span className="text-amber-600">No alt text — please add one.</span>
                       )}

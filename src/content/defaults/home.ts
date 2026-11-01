@@ -1,5 +1,10 @@
 import { l } from "../merge";
-import { events as seedEvents, heroConfig, stats as seedStats } from "@/config/site";
+import {
+  events as seedEvents,
+  heroConfig,
+  programs as seedPrograms,
+  stats as seedStats,
+} from "@/config/site";
 
 /**
  * Home page document. Each section of the admin editor maps to one object
@@ -52,6 +57,20 @@ export const homeDefaults = {
   sections: {
     galleryTitle: l("Gallery", "গ্যালারি"),
     voicesTitle: l("Families who trust us", "যারা আমাদের উপর আস্থা রেখেছেন"),
+  },
+  levels: {
+    eyebrow: l("Our Levels", "আমাদের স্তরসমূহ"),
+    title: l("Pre-School to Class 10", "প্রি-স্কুল থেকে দশম শ্রেণি"),
+    items: seedPrograms.map((program) => ({
+      titleEn: program.titleEn,
+      titleBn: program.titleBn,
+      ageEn: program.age,
+      ageBn: "",
+      descEn: program.descEn,
+      descBn: program.descBn,
+      image: program.img,
+      href: "/academics",
+    })),
   },
   heroSlides: {
     slides: heroConfig.slides.map((slide) => ({

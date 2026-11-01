@@ -3,19 +3,20 @@
 import { useState } from "react";
 
 import type { FieldSchema } from "@/content/types";
+import ImagePicker from "./ImagePicker";
 
 type LocalizedValue = { en?: string; bn?: string };
 
 const inputClass =
-  "w-full rounded-xl border border-pine-900/15 bg-white px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-ink/30 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 disabled:bg-paper disabled:text-ink/40";
+  "w-full rounded-xl border border-pine-900/15 bg-white px-3.5 py-2.5 text-sm text-ink shadow-sm outline-none transition placeholder:text-ink/70 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 disabled:bg-paper disabled:text-ink/65";
 
 function Label({ field }: { field: FieldSchema }) {
   return (
     <span className="mb-1.5 flex items-baseline justify-between gap-2">
-      <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-ink/55">
+      <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-ink/70">
         {field.label}
       </span>
-      <span className="rounded bg-pine-900/5 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-ink/35">
+      <span className="rounded bg-pine-900/5 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-ink/70">
         {field.type === "localized" || field.type === "localizedList" ? "EN + BN" : field.type}
       </span>
     </span>
@@ -24,7 +25,7 @@ function Label({ field }: { field: FieldSchema }) {
 
 function Help({ text }: { text?: string }) {
   if (!text) return null;
-  return <p className="mt-1.5 text-[11px] leading-relaxed text-ink/45">{text}</p>;
+  return <p className="mt-1.5 text-[11px] leading-relaxed text-ink/65">{text}</p>;
 }
 
 function LocalizedInput({
@@ -50,6 +51,7 @@ function LocalizedInput({
           rows={field.rows ?? 3}
           value={value?.en ?? ""}
           disabled={disabled}
+          aria-label={`${field.label} (English)`}
           onChange={(e) => onChange({ ...value, en: e.target.value })}
           className={inputClass}
           placeholder={field.placeholder}
@@ -58,6 +60,7 @@ function LocalizedInput({
         <input
           value={value?.en ?? ""}
           disabled={disabled}
+          aria-label={`${field.label} (English)`}
           onChange={(e) => onChange({ ...value, en: e.target.value })}
           className={inputClass}
           placeholder={field.placeholder}
@@ -74,7 +77,7 @@ function LocalizedInput({
 
       {showBn && (
         <div className="mt-2 rounded-xl border border-dashed border-pine-900/15 bg-paper/60 p-2.5">
-          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink/35">
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink/70">
             Bengali (used by the বাংলা toggle only)
           </p>
           {multiline ? (
@@ -82,6 +85,7 @@ function LocalizedInput({
               rows={field.rows ?? 3}
               value={value?.bn ?? ""}
               disabled={disabled}
+              aria-label={`${field.label} (Bengali)`}
               onChange={(e) => onChange({ ...value, bn: e.target.value })}
               className={inputClass}
             />
@@ -89,6 +93,7 @@ function LocalizedInput({
             <input
               value={value?.bn ?? ""}
               disabled={disabled}
+              aria-label={`${field.label} (Bengali)`}
               onChange={(e) => onChange({ ...value, bn: e.target.value })}
               className={inputClass}
             />
@@ -122,6 +127,7 @@ function JsonInput({
         value={text}
         disabled={disabled}
         spellCheck={false}
+        aria-label={field.label}
         onChange={(e) => {
           const next = e.target.value;
           setText(next);
@@ -203,6 +209,7 @@ export default function Field({
             type="button"
             role="switch"
             aria-checked={Boolean(value)}
+            aria-label={field.label}
             disabled={disabled}
             onClick={() => onChange(!value)}
             className={[
@@ -254,7 +261,7 @@ export default function Field({
                 className="rounded-xl border border-pine-900/10 bg-paper/50 p-2.5"
               >
                 <div className="flex items-center justify-between pb-1.5">
-                  <span className="text-[10px] font-bold uppercase tracking-wide text-ink/35">
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-ink/70">
                     {field.itemLabel ?? "Item"} {i + 1}
                   </span>
                   <div className="flex items-center gap-1">
@@ -266,7 +273,7 @@ export default function Field({
                         [next[i - 1], next[i]] = [next[i], next[i - 1]];
                         onChange(next);
                       }}
-                      className="rounded px-1.5 text-xs text-ink/40 hover:bg-white hover:text-ink disabled:opacity-30"
+                      className="rounded px-1.5 text-xs text-ink/65 hover:bg-white hover:text-ink disabled:opacity-30"
                       aria-label="Move up"
                     >
                       ↑
@@ -279,7 +286,7 @@ export default function Field({
                         [next[i + 1], next[i]] = [next[i], next[i + 1]];
                         onChange(next);
                       }}
-                      className="rounded px-1.5 text-xs text-ink/40 hover:bg-white hover:text-ink disabled:opacity-30"
+                      className="rounded px-1.5 text-xs text-ink/65 hover:bg-white hover:text-ink disabled:opacity-30"
                       aria-label="Move down"
                     >
                       ↓
@@ -288,7 +295,7 @@ export default function Field({
                       type="button"
                       disabled={disabled}
                       onClick={() => onChange(rows.filter((_, index) => index !== i))}
-                      className="rounded px-1.5 text-xs font-bold text-red-500/70 hover:bg-white hover:text-red-600"
+                      className="rounded px-1.5 text-xs font-bold text-red-700 hover:bg-white hover:text-red-600"
                       aria-label="Remove"
                     >
                       ✕
@@ -300,6 +307,7 @@ export default function Field({
                     value={row.en ?? ""}
                     disabled={disabled}
                     placeholder="English"
+                    aria-label={`${field.label} ${i + 1} (English)`}
                     onChange={(e) => {
                       const next = [...rows];
                       next[i] = { ...row, en: e.target.value };
@@ -311,6 +319,7 @@ export default function Field({
                     value={row.bn ?? ""}
                     disabled={disabled}
                     placeholder="Bengali (optional)"
+                    aria-label={`${field.label} ${i + 1} (Bengali)`}
                     onChange={(e) => {
                       const next = [...rows];
                       next[i] = { ...row, bn: e.target.value };
@@ -344,7 +353,7 @@ export default function Field({
             {rows.map((row, i) => (
               <div key={i} className="rounded-xl border border-pine-900/10 bg-paper/50 p-3">
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wide text-ink/35">
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-ink/70">
                     {field.itemLabel ?? "Item"} {i + 1}
                   </span>
                   <div className="flex items-center gap-1">
@@ -356,7 +365,7 @@ export default function Field({
                         [next[i - 1], next[i]] = [next[i], next[i - 1]];
                         onChange(next);
                       }}
-                      className="rounded px-1.5 text-xs text-ink/40 hover:bg-white hover:text-ink disabled:opacity-30"
+                      className="rounded px-1.5 text-xs text-ink/65 hover:bg-white hover:text-ink disabled:opacity-30"
                       aria-label="Move up"
                     >
                       ↑
@@ -369,7 +378,7 @@ export default function Field({
                         [next[i + 1], next[i]] = [next[i], next[i + 1]];
                         onChange(next);
                       }}
-                      className="rounded px-1.5 text-xs text-ink/40 hover:bg-white hover:text-ink disabled:opacity-30"
+                      className="rounded px-1.5 text-xs text-ink/65 hover:bg-white hover:text-ink disabled:opacity-30"
                       aria-label="Move down"
                     >
                       ↓
@@ -378,7 +387,7 @@ export default function Field({
                       type="button"
                       disabled={disabled}
                       onClick={() => onChange(rows.filter((_, index) => index !== i))}
-                      className="rounded px-1.5 text-xs font-bold text-red-500/70 hover:bg-white hover:text-red-600"
+                      className="rounded px-1.5 text-xs font-bold text-red-700 hover:bg-white hover:text-red-600"
                       aria-label="Remove"
                     >
                       ✕
@@ -387,7 +396,17 @@ export default function Field({
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {Object.entries(field.fields ?? {}).map(([key, child]) => (
-                    <div key={key} className={child.type === "textarea" ? "sm:col-span-2" : ""}>
+                    <div
+                      key={key}
+                      className={
+                        child.type === "textarea" ||
+                        child.type === "localizedList" ||
+                        child.type === "list" ||
+                        child.type === "json"
+                          ? "sm:col-span-2"
+                          : ""
+                      }
+                    >
                       <Field
                         field={child}
                         value={row[key]}
@@ -423,6 +442,20 @@ export default function Field({
       );
 
     case "image":
+      return (
+        <div>
+          <Label field={field} />
+          <ImagePicker
+            value={(value as string) ?? ""}
+            onChange={onChange}
+            disabled={disabled}
+            placeholder={field.placeholder}
+            label={field.label}
+          />
+          <Help text={field.help} />
+        </div>
+      );
+
     case "url":
     case "text":
     default:
@@ -436,14 +469,6 @@ export default function Field({
             className={inputClass}
             placeholder={field.placeholder}
           />
-          {field.type === "image" && typeof value === "string" && value ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={value}
-              alt=""
-              className="mt-2 h-16 w-auto rounded-lg border border-pine-900/10 object-cover"
-            />
-          ) : null}
           <Help text={field.help} />
         </label>
       );

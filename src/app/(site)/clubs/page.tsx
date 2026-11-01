@@ -1,12 +1,10 @@
 import ClubsContent from "./content";
-import { clubs as seedClubs } from "@/config/site";
-import { getSiteContent } from "@/lib/cms";
+import { getPublishedDoc } from "@/content/store";
+import type { ClubsDoc } from "@/content/defaults/clubs";
 
 export const metadata = { title: "ক্লাব — Cosmo School Banasree" };
-export const revalidate = 60;
 
 export default async function ClubsPage() {
-  const site = await getSiteContent().catch(() => null);
-  const clubs = site?.clubs?.length ? site.clubs : seedClubs;
-  return <ClubsContent clubs={clubs} />;
+  const doc = await getPublishedDoc<ClubsDoc>("clubs");
+  return <ClubsContent doc={doc} />;
 }

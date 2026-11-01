@@ -113,7 +113,7 @@ export default function UsersManager({
     <div className="space-y-5">
       <Card className="p-5">
         <h2 className="font-display text-base font-bold text-pine-950">Add an account</h2>
-        <p className="mt-1 text-xs text-ink/50">
+        <p className="mt-1 text-xs text-ink/65">
           Give teachers or office staff their own login instead of sharing one password.
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -167,7 +167,7 @@ export default function UsersManager({
                   </span>
                 )}
               </p>
-              <p className="truncate text-[11px] text-ink/45">
+              <p className="truncate text-[11px] text-ink/65">
                 {row.email}
                 {row.lastLoginAt
                   ? ` · last login ${new Date(row.lastLoginAt).toLocaleDateString("en-GB")}`
@@ -178,7 +178,7 @@ export default function UsersManager({
             <Badge tone={row.role === "superadmin" ? "amber" : row.role === "editor" ? "green" : "slate"}>
               {row.role}
             </Badge>
-            <span className="hidden text-[11px] text-ink/40 sm:inline">{ROLE_HELP[row.role]}</span>
+            <span className="hidden text-[11px] text-ink/65 sm:inline">{ROLE_HELP[row.role]}</span>
 
             <div className="flex items-center gap-1">
               <Select
@@ -235,7 +235,7 @@ export default function UsersManager({
         ))}
       </Card>
 
-      <p className="text-[11px] leading-relaxed text-ink/40">
+      <p className="text-[11px] leading-relaxed text-ink/65">
         Changing a password signs that user out everywhere. The panel always keeps at least one
         superadmin.
       </p>

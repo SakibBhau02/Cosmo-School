@@ -28,10 +28,33 @@ export async function GET(req: Request, ctx: Ctx) {
   return NextResponse.json({ page, record, user });
 }
 
+/**
+ * Pages that render a document owned by another page. Publishing `teachers`
+ * must also refresh /leadership, and site settings are used by every route.
+ */
+const DEPENDENT_PATHS: Record<string, string[]> = {
+  teachers: ["/leadership"],
+  global: [
+    "/",
+    "/about",
+    "/academics",
+    "/admission",
+    "/clubs",
+    "/contact",
+    "/day-long-school",
+    "/gallery",
+    "/leadership",
+    "/mission-vision",
+    "/results",
+    "/teachers",
+  ],
+};
+
 async function finish(key: string) {
   revalidateTag("content", "max");
   const page = getPageSchema(key);
   if (page?.path) revalidatePath(page.path, "page");
+  for (const path of DEPENDENT_PATHS[key] ?? []) revalidatePath(path, "page");
 }
 
 export async function PUT(req: Request, ctx: Ctx) {

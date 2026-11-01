@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { LanguageProvider } from "@/components/Language";
+import { siteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: "Cosmo School — Banasree Campus",
   description:
     "Cosmo School Banasree Campus, Dhaka — National curriculum in English version. Pre-School to Class 10. Admission, notices, results, academics.",
+  openGraph: {
+    type: "website",
+    siteName: "Cosmo School — Banasree Campus",
+    locale: "en_BD",
+    images: [{ url: "/cosmo-logo.png", alt: "Cosmo School" }],
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({

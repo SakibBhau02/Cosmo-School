@@ -77,11 +77,14 @@ page / layout
 |---|---|
 | `content_docs` | `key`, `draft`, `published`, `updated_by/at`, `published_by/at` |
 | `content_versions` | Snapshot per publish (`key`, `version`, `doc`, `saved_by`) |
+| `gallery_events` | Event albums (`slug`, EN/BN title + description, date, location, cover, status, sort) |
+| `gallery_photos` | Photos per album (URL, dimensions, EN/BN alt + caption, sort); cascade-deleted with the album |
 | `sessions` | Admin sessions (hash, user, expiry, user-agent) |
 | `audit_log` | Existing table, now written on save/publish/reset/login |
 | `users` | Extended with `name`, `last_login_at` |
 
-Migration: `drizzle/0002_content_cms.sql` (idempotent).
+Migration: `drizzle/0002_content_cms.sql` (idempotent) plus
+`drizzle/0004_gallery_events.sql` for event albums.
 
 ## 5. Adding an editor for another page
 
@@ -100,10 +103,13 @@ needed per page.
 ## 6. Operations
 
 ```bash
-npm run db:migrate        # apply drizzle/*.sql
+npm run db:migrate        # apply drizzle/*.sql (includes gallery albums)
+npm run db:seed:gallery   # one-time: turn existing gallery photos into albums
 npm run seed:admin        # create/reset the admin login, prints credentials
 ADMIN_EMAIL=... ADMIN_PASSWORD=... npm run seed:admin   # non-interactive
 npm run typecheck
+npm run check:content     # editor schema ↔ default document
+npm run check:editor      # render every editor control
 npm run build
 ```
 
@@ -115,15 +121,49 @@ Editable today:
 
 - **Home** — hero copy/CTAs/video, hero slides with per-slide buttons, stat
   counters, upcoming events, guardian testimonials, the admission offer block
-  (headline, deadline, bullets, helpline, fine print, on/off switch) and the
-  gallery/testimonial headings.
+  (headline, deadline, bullets, helpline, fine print, on/off switch), the
+  “Our Levels” cards (title, age badge in EN + BN, description, image, link) and
+  the gallery/testimonial headings.
 - **Site settings** — identity, contact, social links, every admission banner
   (header badge, hero badge, footer strip, apply label, helpline) and SEO
   defaults.
+- **About** — hero (copy + background image), section jump links, who-we-are,
+  journey milestones, facility cards, story paragraphs, beliefs, the four
+  working-structure groups, wider approach and both call-to-action buttons.
+- **Academics** — hero, the four learning stages (image, age band, description,
+  optional highlight), weekly routine table, commitment points and the
+  academic goal steps.
+- **Admission** — hero, the eight admission steps, required documents, age
+  criteria table, guardian FAQs and the inquiry-form block.
+- **Clubs** — hero plus one card per club (icon, name, description) and the
+  card button labels/links.
+- **Contact** — page headings, campus/office card labels and the map embed
+  (phone, e-mail, address, hours and social links come from Site settings).
+- **Leadership** — hero, the three leader messages (photo, name, role,
+  eyebrow, paragraphs) and the faculty section headings/button.
+- **Mission & Vision** — hero, principal's message, mission points and the
+  admission button.
+- **Results** — headline numbers, stat labels, table column labels and rows.
+- **Teachers** — hero and one card per teacher (optional photo, name, role,
+  subject, experience). The Leadership page renders the same list.
+- **Day-Long School** — hero, parent worries, the full daily routine, special
+  features, photo strip, staff spotlight, guardian quote, the twelve
+  why-Cosmo reasons, the Cosmo Promise, all feature cards, campus-visit block,
+  visit-request form labels and the sticky sub-navigation.
 - **Notices** (`/admin/notices`) — English + Bengali title and body, tag, date,
   pin, draft/publish, delete.
-- **Media** (`/admin/media`) — upload, alt text (EN/BN), copy URL, delete,
-  search.
+- **Gallery albums** (`/admin/gallery`) — one album per event (Poha Boishakh, Eid,
+  Book Fair, Science Fair), with a title/description in EN + BN, date, location,
+  cover photo, draft/publish visibility and sort order. Each album accepts
+  **many photos at once** (drag-and-drop, up to 40 per upload), photos from the
+  media library, per-photo EN/BN alt text and captions, reordering and cover
+  selection. Deleting an album cascades its photos.
+- **Gallery page** — the page headings and footnote. Public albums live at
+  `/gallery` and `/gallery/<slug>` with `ImageGallery` + `BreadcrumbList`
+  structured data, canonical URLs and Open Graph images.
+- **Media** (`/admin/media`) — upload many files at once, alt text (EN/BN), copy
+  URL, delete, search. The same library powers the image picker and gallery
+  albums.
 - **Inquiry inbox** (`/admin/inquiries`) — filter by status, mark
   new/contacted/done, internal notes, delete, CSV export.
 - **Accounts** (`/admin/users`) — create logins, change roles, reset passwords,
@@ -138,18 +178,50 @@ removed. Its content is either migrated above or scheduled below.
 |---|---|
 | ~~1~~ | ✅ English-first site, content engine, session auth, admin shell, home + site settings |
 | ~~2~~ | ✅ Notices, media library, inquiry inbox, users & roles |
-| 3 | Page editors for About, Academics, Admission (fees/docs/ages/FAQs), Clubs, Contact, Gallery, Leadership, Mission & Vision, Results, Teachers, Day-Long School + an image picker for image fields |
+| ~~3~~ | ✅ Page editors for About, Academics, Admission, Clubs, Contact, Gallery, Leadership, Mission & Vision, Results, Teachers, Day-Long School + media-library image picker |
+| ~~3.5~~ | ✅ Event-based gallery albums with bulk upload, admin shell/dashboard/editor UX refresh, gallery SEO (`ImageGallery` JSON-LD, canonical, Open Graph), `sitemap.xml` and `robots.txt` |
 | 4 | Retire `config/site.ts` + `data/*.json` as content sources, preview/rollback UI, WordPress code removal |
 
-## 9. Known gaps
+## 9. Admin UX & search
 
-- Pages listed in Phase 3 still render from `config/site.ts` / `data/*.json`.
-  They are correct and fast, but not yet editable from the panel.
+- **Navigation.** The sidebar groups Dashboard → Pages → Content (Gallery,
+  Notices, Media, Inquiries) → Settings (Site settings, Accounts). Page rows carry
+  a status dot (published / draft / defaults), and the filter box narrows the page
+  list. The header shows the current section and a constant “drafts are private”
+  reminder.
+- **Long editors.** Page editors with more than four sections open the first
+  section and collapse the rest. Section chips jump and expand, and “Expand all”
+  / “Collapse all” are one click. Save/publish stay in the sticky bar.
+- **Uploads.** Gallery albums accept drag-and-drop batches (40 at a time) and
+  media-library imports. The Media library also accepts batches. Every photo keeps
+  separate English and Bengali alt text and caption for accessibility.
+- **Search / AEO / GEO.** Public gallery pages return canonical URLs, Open Graph
+  and Twitter cards, `ImageGallery` and `BreadcrumbList` JSON-LD, semantic
+  `<figure>` / `<figcaption>` markup, descriptive alt text and visible event
+  date/location. `/sitemap.xml` lists every published album and `/robots.txt`
+  keeps crawlers out of `/admin` and `/api`. The admin panel stays `noindex`.
+
+## 10. Known gaps
+
+- The home page still mixes content documents with legacy `getSiteContent()`
+  data (clubs, the FlexibleSchooling block and `site.programs`, which is now only
+  the fallback for the editable “Our Levels” cards). Phase 4 moves the rest into
+  documents too.
+- **Age criteria have three editable homes by design** — the home “Our Levels”
+  age badges, the Academics stage age bands and the Admission age-criteria table.
+  Each renders from its own document, so change a number in all three if the
+  policy applies everywhere. `config/site.ts` no longer exports `ageCriteria`
+  (it was a stale duplicate); `config/site.ts` `programs[].age` only seeds the
+  defaults for a fresh database.
 - `data/cms.json` and `config/site.ts` still hold Bengali-only notice bodies for
   the seed fallback; database rows carry English and win on read.
-- `revalidatePath("/")` covers `global` changes but sub-pages that read global
-  content are revalidated by tag on their next request (stale-while-revalidate).
+- `NEXT_PUBLIC_SITE_URL` should be set in production so canonical URLs, Open
+  Graph and `sitemap.xml` point at the real domain (it falls back to the Vercel
+  URL or localhost).
 - The `x-admin-key` header is still accepted by `authorizeAdmin()` for scripts
   and emergencies; the UI only uses real sessions.
+- Schema checks (`npm run check:content` and `npm run check:editor`) validate
+  every editor field against its default document and render each control.
+  They are developer tools, not part of the build.
 
 

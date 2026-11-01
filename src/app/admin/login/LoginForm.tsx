@@ -38,7 +38,7 @@ export default function LoginForm({ next }: { next: string }) {
   return (
     <form onSubmit={submit} className="mt-7 space-y-4">
       <label className="block">
-        <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.14em] text-ink/50">
+        <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.14em] text-ink/65">
           Email
         </span>
         <input
@@ -53,7 +53,7 @@ export default function LoginForm({ next }: { next: string }) {
       </label>
 
       <label className="block">
-        <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.14em] text-ink/50">
+        <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.14em] text-ink/65">
           Password
         </span>
         <div className="relative">
@@ -69,7 +69,7 @@ export default function LoginForm({ next }: { next: string }) {
           <button
             type="button"
             onClick={() => setShow((v) => !v)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-ink/45 hover:bg-pine-900/5 hover:text-ink"
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-ink/65 hover:bg-pine-900/5 hover:text-ink"
           >
             {show ? "Hide" : "Show"}
           </button>

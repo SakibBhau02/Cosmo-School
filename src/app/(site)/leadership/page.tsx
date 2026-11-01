@@ -1,11 +1,14 @@
 import LeadershipContent from "./content";
-import { teachers as seedTeachers } from "@/config/site";
-import { listTeachers } from "@/lib/cms";
+import { getPublishedDoc } from "@/content/store";
+import type { LeadershipDoc } from "@/content/defaults/leadership";
+import type { TeachersDoc } from "@/content/defaults/teachers";
 
 export const metadata = { title: "নেতৃত্ব — Cosmo School Banasree" };
-export const revalidate = 60;
 
 export default async function LeadershipPage() {
-  const teachers = await listTeachers().catch(() => seedTeachers);
-  return <LeadershipContent teachers={teachers} />;
+  const [doc, teachersDoc] = await Promise.all([
+    getPublishedDoc<LeadershipDoc>("leadership"),
+    getPublishedDoc<TeachersDoc>("teachers"),
+  ]);
+  return <LeadershipContent doc={doc} teachers={teachersDoc.teachers.items} />;
 }

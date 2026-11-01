@@ -25,6 +25,7 @@ import {
 import LeaderPhoto from "@/components/LeaderPhoto";
 import type { SiteContent } from "@/lib/cms";
 import type { CmsNotice } from "@/lib/cms";
+import type { GalleryEvent } from "@/lib/gallery";
 import { resolveImg } from "@/lib/img";
 import TestimonialMarquee from "@/components/TestimonialMarquee";
 import Shuddhachar from "@/components/Shuddhachar";
@@ -34,6 +35,7 @@ import { homeDefaults } from "@/content/defaults/home";
 import { globalDefaults } from "@/content/defaults/global";
 
 type SitePayload = SiteContent & {
+  galleryAlbums?: GalleryEvent[];
   content?: {
     global: typeof globalDefaults | null;
     home: typeof homeDefaults | null;
@@ -149,10 +151,55 @@ export default function Home() {
         metaEn: VOICE_EN[v.text]?.meta,
         textEn: VOICE_EN[v.text]?.text,
       }));
-  const programs = site?.programs ?? seedPrograms;
+  const levels = home.levels?.items?.length
+    ? home.levels.items
+    : seedPrograms.map((p) => ({
+        titleEn: p.titleEn,
+        titleBn: p.titleBn,
+        ageEn: p.age,
+        ageBn: "",
+        descEn: p.descEn,
+        descBn: p.descBn,
+        image: p.img,
+        href: "/academics",
+      }));
+  const levelsEyebrow = home.levels?.eyebrow ?? homeDefaults.levels.eyebrow;
+  const levelsHeading = home.levels?.title ?? homeDefaults.levels.title;
   const clubs = site?.clubs ?? seedClubs;
+  const galleryAlbums = site?.galleryAlbums ?? [];
+  const galleryFromAlbums = galleryAlbums.flatMap((album) =>
+    (album.photos ?? []).map((photo) => ({
+      key: `${album.slug}-${photo.id}`,
+      href: `/gallery/${album.slug}`,
+      img: photo.url,
+      alt:
+        photo.altEn ||
+        photo.altBn ||
+        photo.captionEn ||
+        photo.captionBn ||
+        album.titleEn,
+      captionEn: photo.captionEn || album.titleEn,
+      captionBn: photo.captionBn || album.titleBn || album.titleEn,
+      catEn: album.titleEn,
+      catBn: album.titleBn || album.titleEn,
+    })),
+  );
   const gallery =
-    site?.gallery ?? seedGallery.map((g, i) => ({ slug: `g-${i}`, title: g.title, cat: g.cat, img: g.src }));
+    galleryFromAlbums.length > 0
+      ? galleryFromAlbums
+      : (
+          site?.gallery ??
+          seedGallery.map((g, i) => ({ slug: `g-${i}`, title: g.title, cat: g.cat, img: g.src }))
+        ).map((g) => ({
+          key: g.slug,
+          href: "/gallery",
+          img: g.img,
+          alt: g.title,
+          captionEn: g.title,
+          captionBn: g.title,
+          catEn: g.cat,
+          catBn: g.cat,
+        }));
   const heroSlides = home.heroSlides.slides?.length
     ? home.heroSlides.slides
     : site?.heroSlides?.length
@@ -208,18 +255,22 @@ export default function Home() {
       {/* Programs */}
       <section className="mx-auto max-w-7xl px-4 pt-20">
         <Reveal>
-          <Eyebrow>{t(lang, "আমাদের স্তরসমূহ", "Our Levels")}</Eyebrow>
+          <Eyebrow>{pickLocalized(levelsEyebrow, lang)}</Eyebrow>
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-pine-950 mt-3">
-            {t(lang, "প্রি-স্কুল থেকে দশম শ্রেণি", "Pre-School to Class 10")}
+            {pickLocalized(levelsHeading, lang)}
           </h2>
         </Reveal>
         <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {programs.map((p, i) => (
-            <Reveal key={p.titleEn} delay={i * 0.07}>
+          {levels.map((p, i) => (
+            <Reveal key={`${p.titleEn}-${i}`} delay={i * 0.07}>
               <article className="group rounded-3xl overflow-hidden bg-white shadow-lg border border-pine-900/10 hover:-translate-y-2 hover:shadow-2xl transition duration-300">
                 <div className="relative h-44">
-                  <Image src={resolveImg(site?.media, p.img)} alt={p.titleEn} fill className="object-cover group-hover:scale-105 transition duration-500" sizes="(max-width:1024px) 50vw, 25vw" />
-                  <span className="absolute top-3 left-3 rounded-full bg-pine-950/85 text-white text-xs font-bold px-3 py-1">{p.age}</span>
+                  <Image src={resolveImg(site?.media, p.image)} alt={pickLocalized({ en: p.titleEn, bn: p.titleBn }, lang)} fill className="object-cover group-hover:scale-105 transition duration-500" sizes="(max-width:1024px) 50vw, 25vw" />
+                  {(p.ageEn || p.ageBn) && (
+                    <span className="absolute top-3 left-3 rounded-full bg-pine-950/85 text-white text-xs font-bold px-3 py-1">
+                      {pickLocalized({ en: p.ageEn, bn: p.ageBn }, lang)}
+                    </span>
+                  )}
                   <span className="absolute top-3 right-3 rounded-full bg-gold-500 text-pine-950 text-xs font-bold px-3 py-1">
                     {t(lang, `স্টেজ ${i + 1}`, `Stage ${i + 1}`)}
                   </span>
@@ -227,7 +278,7 @@ export default function Home() {
                 <div className="p-5">
                   <h3 className="font-display text-lg font-bold text-pine-950">{t(lang, p.titleBn, p.titleEn)}</h3>
                   <p className="text-sm text-ink/65 mt-1">{t(lang, p.descBn, p.descEn)}</p>
-                  <Link href="/academics" className="inline-block mt-3 text-sm font-bold text-pine-700 hover:text-pine-950">
+                  <Link href={p.href || "/academics"} className="inline-block mt-3 text-sm font-bold text-pine-700 hover:text-pine-950">
                     {t(lang, "বিস্তারিত →", "Details →")}
                   </Link>
                 </div>
@@ -352,12 +403,12 @@ export default function Home() {
         </Reveal>
         <div className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
           {gallery.slice(0, 8).map((g, i) => (
-            <Reveal key={g.slug + i} delay={(i % 4) * 0.06}>
-              <Link href="/gallery" className="group relative block rounded-2xl overflow-hidden aspect-[4/3]">
-                <Image src={resolveImg(site?.media, g.img)} alt={g.title} fill className="object-cover group-hover:scale-110 transition duration-700" sizes="(max-width:1024px) 50vw, 25vw" />
+            <Reveal key={g.key + i} delay={(i % 4) * 0.06}>
+              <Link href={g.href} className="group relative block rounded-2xl overflow-hidden aspect-[4/3]">
+                <Image src={resolveImg(site?.media, g.img)} alt={g.alt} fill className="object-cover group-hover:scale-110 transition duration-700" sizes="(max-width:1024px) 50vw, 25vw" />
                 <span className="absolute inset-0 bg-gradient-to-t from-pine-950/80 to-transparent opacity-0 group-hover:opacity-100 transition" />
                 <span className="absolute bottom-3 left-3 right-3 text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition">
-                  {g.title} • {g.cat}
+                  {t(lang, g.captionBn, g.captionEn)} • {t(lang, g.catBn, g.catEn)}
                 </span>
               </Link>
             </Reveal>

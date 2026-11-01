@@ -332,7 +332,7 @@ export default function NoticesManager({
                 className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg text-sm ${
                   notice.pinned
                     ? "bg-gold-500/20 text-gold-700"
-                    : "bg-pine-900/5 text-ink/30 hover:text-ink/60"
+                    : "bg-pine-900/5 text-ink/70 hover:text-ink/70"
                 }`}
               >
                 ★
@@ -342,7 +342,7 @@ export default function NoticesManager({
                 <p className="truncate font-semibold text-pine-950">
                   {notice.titleEn || notice.titleBn}
                 </p>
-                <p className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-ink/45">
+                <p className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-ink/65">
                   <span className="font-mono">{notice.slug}</span>
                   {notice.date && <span>· {notice.date}</span>}
                   {(notice.tagEn || notice.tag) && <span>· {notice.tagEn || notice.tag}</span>}

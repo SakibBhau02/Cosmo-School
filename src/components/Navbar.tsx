@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useLang, t } from "./Language";
 import { branch } from "@/config/site";
@@ -9,6 +10,7 @@ import { branch } from "@/config/site";
 const links = [
   { href: "/", bn: "হোম", en: "Home" },
   { href: "/notices", bn: "নোটিশ", en: "Notices" },
+  { href: "/gallery", bn: "গ্যালারি", en: "Gallery" },
   { href: "/day-long-school", bn: "ডে লং স্কুল", en: "Day Long School" },
   { href: "/leadership", bn: "নেতৃত্ব", en: "Leadership" },
   { href: "/contact", bn: "যোগাযোগ", en: "Contact" },
@@ -17,6 +19,10 @@ const links = [
 export default function Navbar() {
   const { lang, setLang } = useLang();
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <header className="sticky top-0 z-50">
@@ -34,7 +40,7 @@ export default function Navbar() {
             <button
               onClick={() => setLang(lang === "bn" ? "en" : "bn")}
               className="rounded-full border border-white/30 px-2.5 py-0.5 font-semibold hover:bg-white/10"
-              aria-label="Switch language"
+              aria-label={`Switch language (${lang === "bn" ? "EN" : "বাং"})`}
             >
               {lang === "bn" ? "EN" : "বাং"}
             </button>
@@ -58,7 +64,7 @@ export default function Navbar() {
               <span className="font-display block text-lg font-bold text-pine-900">
                 {t(lang, "কসমো স্কুল", "Cosmo School")}
               </span>
-              <span className="block text-xs font-semibold tracking-widest text-gold-500 uppercase">
+              <span className="block text-xs font-semibold tracking-widest text-pine-700 uppercase">
                 {t(lang, "বনশ্রী ক্যাম্পাস • ঢাকা", "Banasree Campus • Dhaka")}
               </span>
             </span>
@@ -69,7 +75,12 @@ export default function Navbar() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full px-3.5 py-2 text-sm font-semibold text-pine-950/80 hover:bg-pine-900 hover:text-white transition"
+                aria-current={isActive(l.href) ? "page" : undefined}
+                className={`rounded-full px-3 py-2 text-sm font-semibold transition ${
+                  isActive(l.href)
+                    ? "bg-pine-900 text-white"
+                    : "text-pine-950/80 hover:bg-pine-900 hover:text-white"
+                }`}
               >
                 {t(lang, l.bn, l.en)}
               </Link>
@@ -98,7 +109,12 @@ export default function Navbar() {
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 font-semibold text-pine-950 hover:bg-pine-900 hover:text-white"
+                aria-current={isActive(l.href) ? "page" : undefined}
+                className={`rounded-lg px-3 py-2.5 font-semibold ${
+                  isActive(l.href)
+                    ? "bg-pine-900 text-white"
+                    : "text-pine-950 hover:bg-pine-900 hover:text-white"
+                }`}
               >
                 {t(lang, l.bn, l.en)}
               </Link>

@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useLang, t, tx } from "./Language";
-import type { DaylongContent } from "@/config/site";
+import type { DaylongDoc } from "@/content/defaults/daylong";
 
 // ---------- Scroll-spy sticky subnav ----------
 const SECTIONS = [
-  { id: "routine", bn: "🕗 রুটিন", en: "🕗 Routine" },
-  { id: "faq", bn: "❓ জিজ্ঞাসা", en: "❓ FAQ" },
+  { id: "routine", key: "routine" as const },
+  { id: "faq", key: "faq" as const },
 ];
 
-export function DaycareSubnav() {
+export function DaycareSubnav({ labels }: { labels: DaylongDoc["subnav"] }) {
   const { lang } = useLang();
   const [active, setActive] = useState("routine");
 
@@ -43,14 +43,14 @@ export function DaycareSubnav() {
                 : "bg-white text-pine-900 border border-pine-900/15 hover:border-pine-900/40"
             }`}
           >
-            {t(lang, s.bn, s.en)}
+            {t(lang, labels[s.key].bn, labels[s.key].en)}
           </a>
         ))}
         <a
           href="#visit"
           className="shrink-0 rounded-full px-4 py-1.5 text-sm font-bold bg-gold-500 text-pine-950 hover:bg-gold-300 transition"
         >
-          {t(lang, "📅 ক্যাম্পাস ভিজিট", "📅 Campus Visit")}
+          {t(lang, labels.visit.bn, labels.visit.en)}
         </a>
       </div>
     </div>
@@ -67,7 +67,7 @@ const DAYS: { bn: string; en: string }[] = [
   { bn: "বৃহস্পতিবার", en: "Thursday" },
 ];
 
-export function VisitForm({ form }: { form: DaylongContent["visitForm"] }) {
+export function VisitForm({ form }: { form: DaylongDoc["visitForm"] }) {
   const { lang } = useLang();
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
@@ -89,31 +89,31 @@ export function VisitForm({ form }: { form: DaylongContent["visitForm"] }) {
     return (
       <div className="rounded-3xl bg-pine-900 text-white p-8 text-center">
         <p className="text-3xl">📅</p>
-        <h3 className="font-display text-xl font-bold mt-2">{t(lang, form.doneTitleBn, form.doneTitleEn)}</h3>
-        <p className="text-white/70 text-sm mt-1">{t(lang, form.doneDescBn, form.doneDescEn)}</p>
+        <h3 className="font-display text-xl font-bold mt-2">{t(lang, form.doneTitle.bn, form.doneTitle.en)}</h3>
+        <p className="text-white/70 text-sm mt-1">{t(lang, form.doneDesc.bn, form.doneDesc.en)}</p>
       </div>
     );
   }
 
   return (
     <form onSubmit={onSubmit} className="rounded-3xl bg-white shadow-xl border border-pine-900/10 p-6 grid gap-3">
-      <h3 className="font-display text-xl font-bold text-pine-950">{t(lang, form.titleBn, form.titleEn)}</h3>
+      <h3 className="font-display text-xl font-bold text-pine-950">{t(lang, form.title.bn, form.title.en)}</h3>
       <div className="grid sm:grid-cols-2 gap-3">
-        <input required name="guardian" autoComplete="name" aria-label={t(lang, form.nameBn, form.nameEn)} placeholder={t(lang, form.nameBn, form.nameEn)} className="rounded-xl border border-pine-900/20 px-4 py-3 text-sm outline-none focus:border-pine-700" />
-        <input required name="phone" inputMode="tel" autoComplete="tel" aria-label={t(lang, form.phoneBn, form.phoneEn)} placeholder={t(lang, form.phoneBn, form.phoneEn)} className="rounded-xl border border-pine-900/20 px-4 py-3 text-sm outline-none focus:border-pine-700" />
+        <input required name="guardian" autoComplete="name" aria-label={t(lang, form.nameLabel.bn, form.nameLabel.en)} placeholder={t(lang, form.nameLabel.bn, form.nameLabel.en)} className="rounded-xl border border-pine-900/20 px-4 py-3 text-sm outline-none focus:border-pine-700" />
+        <input required name="phone" inputMode="tel" autoComplete="tel" aria-label={t(lang, form.phoneLabel.bn, form.phoneLabel.en)} placeholder={t(lang, form.phoneLabel.bn, form.phoneLabel.en)} className="rounded-xl border border-pine-900/20 px-4 py-3 text-sm outline-none focus:border-pine-700" />
       </div>
       <div className="grid sm:grid-cols-2 gap-3">
-        <input name="child" aria-label={t(lang, form.ageBn, form.ageEn)} placeholder={t(lang, form.ageBn, form.ageEn)} className="rounded-xl border border-pine-900/20 px-4 py-3 text-sm outline-none focus:border-pine-700" />
-        <select name="day" aria-label={t(lang, form.dayBn, form.dayEn)} className="rounded-xl border border-pine-900/20 px-4 py-3 text-sm outline-none focus:border-pine-700" defaultValue={DAYS[0].bn}>
+        <input name="child" aria-label={t(lang, form.ageLabel.bn, form.ageLabel.en)} placeholder={t(lang, form.ageLabel.bn, form.ageLabel.en)} className="rounded-xl border border-pine-900/20 px-4 py-3 text-sm outline-none focus:border-pine-700" />
+        <select name="day" aria-label={t(lang, form.dayLabel.bn, form.dayLabel.en)} className="rounded-xl border border-pine-900/20 px-4 py-3 text-sm outline-none focus:border-pine-700" defaultValue={DAYS[0].bn}>
           {DAYS.map((d) => (
             <option key={d.bn} value={d.bn}>{tx(lang, d.bn, d.en)}</option>
           ))}
         </select>
       </div>
       <button disabled={sending} className="rounded-full bg-gold-500 font-bold text-pine-950 py-3.5 hover:bg-gold-300 transition disabled:opacity-60">
-        {sending ? t(lang, "পাঠানো হচ্ছে…", "Sending…") : t(lang, form.submitBn, form.submitEn)}
+        {sending ? t(lang, "পাঠানো হচ্ছে…", "Sending…") : t(lang, form.submitLabel.bn, form.submitLabel.en)}
       </button>
-      <p className="text-xs text-ink/55 text-center">{t(lang, form.noteBn, form.noteEn)}</p>
+      <p className="text-xs text-ink/55 text-center">{t(lang, form.note.bn, form.note.en)}</p>
     </form>
   );
 }

@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "check:content": "tsx scripts/check-content-schema.ts",
+    "check:editor": "tsx scripts/check-editor-fields.tsx",
     "check:env": "node scripts/env-check.mjs",
     "check:env:prod": "node scripts/env-check.mjs --prod",
     "check:sigv4": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/sigv4-selftest.mjs",
@@ -15,6 +17,7 @@
     "db:migrate": "node scripts/db-migrate.mjs",
     "db:migrate:prod": "node scripts/db-migrate.mjs --prod",
     "db:seed": "node scripts/db-seed.mjs",
+    "db:seed:gallery": "node scripts/seed-gallery.mjs",
     "db:seed:prod": "node scripts/db-seed.mjs --prod",
     "seed:admin": "node scripts/seed-admin.mjs",
     "seed:admin:prod": "node scripts/seed-admin.mjs --prod",
@@ -41,6 +44,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

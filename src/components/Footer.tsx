@@ -20,7 +20,7 @@ const explore = [
 
 const programs = [
   { href: "/academics", bn: "প্রি-স্কুলিং (২–৩ বছর)", en: "Pre-schooling (2-3 Years)" },
-  { href: "/academics", bn: "প্রি-প্রাইমারি (Prep-I: ৩–৪ বছর, Prep-II: ৪–৫ বছর)", en: "Pre-primary (Prep-I: 3-4 years, Prep-II: 4-5 years)" },
+  { href: "/academics", bn: "প্রি-প্রাইমারি (Prep-I ও Prep-II)", en: "Pre-primary (Prep-I & Prep-II)" },
   { href: "/academics", bn: "প্রাইমারি (১ম–৫ম শ্রেণি)", en: "Primary (Class-I to V)" },
   { href: "/academics", bn: "সেকেন্ডারি (৬ষ্ঠ–১০ম শ্রেণি)", en: "Secondary (Class-VI to X)" },
   { href: "/day-long-school", bn: "🍼 কসমো ডে লং স্কুল", en: "🍼 Cosmo Day Long School" },
@@ -40,7 +40,7 @@ export default function Footer({ global }: { global?: GlobalContent }) {
             <h2 className="font-display text-2xl sm:text-3xl font-bold">
               {pickLocalized(g.admission.stripTitle, lang)}
             </h2>
-            <p className="font-medium text-pine-950/75">
+            <p className="font-medium text-pine-950">
               {pickLocalized(g.admission.stripBody, lang)}
               <a href={`tel:${g.contact.phone}`} className="font-bold underline">
                 {g.contact.phone}

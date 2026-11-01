@@ -39,7 +39,7 @@ export default async function LoginPage({
             </span>
             <div>
               <p className="font-display text-lg font-bold leading-tight">Cosmo School</p>
-              <p className="text-xs uppercase tracking-[0.18em] text-white/50">
+              <p className="text-xs uppercase tracking-[0.18em] text-white/65">
                 Banasree Campus
               </p>
             </div>
@@ -84,20 +84,20 @@ export default async function LoginPage({
               <p className="font-display text-lg font-bold text-pine-950 leading-tight">
                 Cosmo School
               </p>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-ink/45">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-ink/65">
                 Banasree Campus
               </p>
             </div>
           </div>
 
           <h2 className="font-display text-2xl font-bold text-pine-950">Sign in</h2>
-          <p className="mt-1.5 text-sm text-ink/60">
+          <p className="mt-1.5 text-sm text-ink/70">
             Use the admin account issued to you.
           </p>
 
           <LoginForm next={target} />
 
-          <p className="mt-8 text-xs leading-relaxed text-ink/40">
+          <p className="mt-8 text-xs leading-relaxed text-ink/65">
             Sessions expire after 12 hours. If you have lost access, ask a
             superadmin to reset your password from the server.
           </p>

@@ -1,12 +1,10 @@
 import TeachersContent from "./content";
-import { listTeachers } from "@/lib/cms";
-import { teachers as seed } from "@/config/site";
+import { getPublishedDoc } from "@/content/store";
+import type { TeachersDoc } from "@/content/defaults/teachers";
 
 export const metadata = { title: "শিক্ষকমণ্ডলী — Cosmo School Banasree" };
-export const revalidate = 60;
 
 export default async function TeachersPage() {
-  const teachers = await listTeachers().catch(() => seed);
-
-  return <TeachersContent teachers={teachers} />;
+  const doc = await getPublishedDoc<TeachersDoc>("teachers");
+  return <TeachersContent doc={doc} />;
 }

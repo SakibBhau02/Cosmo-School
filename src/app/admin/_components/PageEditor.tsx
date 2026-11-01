@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
 import type { ContentRecord, PageSchema } from "@/content/types";
 import Field from "./Field";
 import { Button } from "./ui";
@@ -18,7 +17,7 @@ type Busy = null | "save" | "publish" | "reset" | "restore";
 
 type VersionRow = { version: number; savedBy: string; savedAt: string | null };
 
-const fullWidth = new Set(["localized", "textarea", "localizedList", "list", "json"]);
+const fullWidth = new Set(["localized", "textarea", "localizedList", "list", "json", "image"]);
 
 function formatWhen(value: string | null) {
   if (!value) return "never";
@@ -39,6 +38,14 @@ export default function PageEditor({ page, record, canWrite }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [versions, setVersions] = useState<VersionRow[] | null>(null);
+  const [openSections, setOpenSections] = useState<Set<string>>(
+    () =>
+      new Set(
+        page.sections
+          .slice(0, page.sections.length > 4 ? 1 : page.sections.length)
+          .map((section) => section.id),
+      ),
+  );
 
   const dirty = useMemo(() => JSON.stringify(doc) !== baseline, [doc, baseline]);
   const busyNow = busy !== null;
@@ -60,6 +67,33 @@ export default function PageEditor({ page, record, canWrite }: Props) {
     }));
     setMessage(null);
   }, []);
+
+  const toggleSection = useCallback((id: string) => {
+    setOpenSections((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const expandAll = useCallback(() => {
+    setOpenSections(new Set(page.sections.map((section) => section.id)));
+  }, [page.sections]);
+
+  const collapseAll = useCallback(() => {
+    setOpenSections(new Set());
+  }, []);
+
+  const jumpTo = useCallback(
+    (id: string) => {
+      setOpenSections((current) => new Set(current).add(id));
+      window.requestAnimationFrame(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    },
+    [],
+  );
 
   const reload = useCallback(async () => {
     const res = await fetch(`/api/admin/content/${page.key}`, { cache: "no-store" });
@@ -192,7 +226,7 @@ export default function PageEditor({ page, record, canWrite }: Props) {
 
   return (
     <div className="space-y-5">
-      <nav className="text-xs font-semibold text-ink/40">
+      <nav className="text-xs font-semibold text-ink/65">
         <Link href="/admin" className="hover:text-pine-950">
           Dashboard
         </Link>
@@ -203,11 +237,11 @@ export default function PageEditor({ page, record, canWrite }: Props) {
       <header className="space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold-500">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-pine-700">
               {page.group === "site" ? "Site settings" : "Page"}
             </p>
             <h1 className="mt-1 font-display text-3xl font-bold text-pine-950">{page.label}</h1>
-            <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink/60">
+            <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink/70">
               {page.description}
             </p>
           </div>
@@ -222,16 +256,38 @@ export default function PageEditor({ page, record, canWrite }: Props) {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
           {page.sections.map((section, index) => (
-            <a
+            <button
               key={section.id}
-              href={`#${section.id}`}
-              className="rounded-full border border-pine-900/10 bg-white px-3 py-1 text-[11px] font-semibold text-ink/60 hover:border-gold-500 hover:text-pine-950"
+              type="button"
+              onClick={() => jumpTo(section.id)}
+              className={[
+                "rounded-full border px-3 py-1 text-[11px] font-semibold transition",
+                openSections.has(section.id)
+                  ? "border-gold-500 bg-gold-500/10 text-pine-950"
+                  : "border-pine-900/10 bg-white text-ink/70 hover:border-gold-500 hover:text-pine-950",
+              ].join(" ")}
             >
               {index + 1}. {section.title}
-            </a>
+            </button>
           ))}
+          <span className="ml-auto flex items-center gap-1 text-[11px] font-bold">
+            <button
+              type="button"
+              onClick={expandAll}
+              className="rounded-lg px-2 py-1 text-pine-700 hover:bg-white"
+            >
+              Expand all
+            </button>
+            <button
+              type="button"
+              onClick={collapseAll}
+              className="rounded-lg px-2 py-1 text-ink/65 hover:bg-white hover:text-pine-950"
+            >
+              Collapse all
+            </button>
+          </span>
         </div>
       </header>
 
@@ -250,7 +306,7 @@ export default function PageEditor({ page, record, canWrite }: Props) {
               <span className={`h-1.5 w-1.5 rounded-full ${dirty ? "bg-amber-500" : "bg-emerald-500"}`} />
               {dirty ? "Unsaved changes" : "Saved"}
             </span>
-            <span className="hidden text-ink/45 sm:inline">
+            <span className="hidden text-ink/65 sm:inline">
               {record.updatedAt ? `Last saved ${formatWhen(record.updatedAt)}` : "Using built-in defaults"}
               {record.updatedBy ? ` · ${record.updatedBy}` : ""}
             </span>
@@ -260,7 +316,7 @@ export default function PageEditor({ page, record, canWrite }: Props) {
             <button
               type="button"
               onClick={openHistory}
-              className="rounded-xl px-3 py-2 text-xs font-bold text-ink/55 hover:bg-white hover:text-pine-950"
+              className="rounded-xl px-3 py-2 text-xs font-bold text-ink/70 hover:bg-white hover:text-pine-950"
             >
               History
             </button>
@@ -268,7 +324,7 @@ export default function PageEditor({ page, record, canWrite }: Props) {
               type="button"
               onClick={reset}
               disabled={!canWrite || busyNow}
-              className="rounded-xl px-3 py-2 text-xs font-bold text-ink/50 hover:bg-white hover:text-red-600 disabled:opacity-40"
+              className="rounded-xl px-3 py-2 text-xs font-bold text-ink/65 hover:bg-white hover:text-red-600 disabled:opacity-40"
             >
               Reset
             </button>
@@ -297,20 +353,20 @@ export default function PageEditor({ page, record, canWrite }: Props) {
         <div className="rounded-2xl border border-pine-900/10 bg-white p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-display text-sm font-bold text-pine-950">Published history</h2>
-            <button onClick={() => setShowHistory(false)} className="text-xs font-bold text-ink/40 hover:text-ink">
+            <button onClick={() => setShowHistory(false)} className="text-xs font-bold text-ink/65 hover:text-ink">
               Close
             </button>
           </div>
           {versions === null ? (
-            <p className="text-xs text-ink/50">Loading…</p>
+            <p className="text-xs text-ink/65">Loading…</p>
           ) : versions.length === 0 ? (
-            <p className="text-xs text-ink/50">Nothing published yet — the built-in copy is live.</p>
+            <p className="text-xs text-ink/65">Nothing published yet — the built-in copy is live.</p>
           ) : (
             <ul className="divide-y divide-pine-900/8">
               {versions.map((version) => (
                 <li key={version.version} className="flex items-center justify-between gap-3 py-2 text-xs">
                   <span className="font-semibold text-pine-950">Version {version.version}</span>
-                  <span className="text-ink/45">
+                  <span className="text-ink/65">
                     {formatWhen(version.savedAt)} · {version.savedBy || "unknown"}
                   </span>
                   <Button variant="secondary" onClick={() => void restore(version.version)} disabled={busyNow}>
@@ -336,35 +392,56 @@ export default function PageEditor({ page, record, canWrite }: Props) {
             id={section.id}
             className="scroll-mt-28 rounded-2xl border border-pine-900/10 bg-white p-5 shadow-sm"
           >
-            <div className="mb-4 flex items-start gap-3">
+            <button
+              type="button"
+              onClick={() => toggleSection(section.id)}
+              aria-expanded={openSections.has(section.id)}
+              className="flex w-full items-start gap-3 text-left"
+            >
               <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-pine-950 font-display text-xs font-bold text-gold-500">
                 {index + 1}
               </span>
-              <div>
-                <h2 className="font-display text-base font-bold text-pine-950">{section.title}</h2>
+              <span className="min-w-0 flex-1">
+                <span className="flex flex-wrap items-center gap-2">
+                  <span className="font-display text-base font-bold text-pine-950">{section.title}</span>
+                  <span className="rounded bg-pine-900/5 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-ink/70">
+                    {Object.keys(section.fields).length} field
+                    {Object.keys(section.fields).length === 1 ? "" : "s"}
+                  </span>
+                </span>
                 {section.description && (
-                  <p className="mt-0.5 text-xs leading-relaxed text-ink/50">{section.description}</p>
+                  <span className="mt-0.5 block text-xs leading-relaxed text-ink/65">
+                    {section.description}
+                  </span>
                 )}
-              </div>
-            </div>
+              </span>
+              <span
+                aria-hidden
+                className={`mt-1 shrink-0 text-xs text-ink/65 transition-transform ${openSections.has(section.id) ? "rotate-180" : ""}`}
+              >
+                ▾
+              </span>
+            </button>
 
-            <div className="grid gap-5 sm:grid-cols-2">
-              {Object.entries(section.fields).map(([key, field]) => (
-                <div key={key} className={fullWidth.has(field.type) ? "sm:col-span-2" : undefined}>
-                  <Field
-                    field={field}
-                    disabled={!canWrite}
-                    value={((doc[section.id] as Record<string, unknown> | undefined)?.[key]) ?? ""}
-                    onChange={(value) => setSectionValue(section.id, key, value)}
-                  />
-                </div>
-              ))}
-            </div>
+            {openSections.has(section.id) && (
+              <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                {Object.entries(section.fields).map(([key, field]) => (
+                  <div key={key} className={fullWidth.has(field.type) ? "sm:col-span-2" : undefined}>
+                    <Field
+                      field={field}
+                      disabled={!canWrite}
+                      value={((doc[section.id] as Record<string, unknown> | undefined)?.[key]) ?? ""}
+                      onChange={(value) => setSectionValue(section.id, key, value)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-pine-900/10 bg-white px-5 py-4 text-xs text-ink/50">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-pine-900/10 bg-white px-5 py-4 text-xs text-ink/65">
         <span>
           Ctrl/⌘ + S saves a draft. Publishing is instant and keeps the previous version in History.
         </span>

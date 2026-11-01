@@ -88,6 +88,44 @@ export const media = pgTable("media", {
   uploadedAt: timestamp("uploaded_at").defaultNow(),
 });
 
+// ── Gallery albums (Phase 3.5). One row per event ("Poha Boishakh 2026",
+// "Science Fair 2016", ...). Photos belong to exactly one album and cascade
+// with it, so deleting an album never leaves orphaned images behind.
+export const galleryEvents = pgTable("gallery_events", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  titleEn: text("title_en").notNull(),
+  titleBn: text("title_bn").notNull().default(""),
+  descriptionEn: text("description_en").notNull().default(""),
+  descriptionBn: text("description_bn").notNull().default(""),
+  eventDate: text("event_date").notNull().default(""),
+  location: text("location").notNull().default(""),
+  coverUrl: text("cover_url").notNull().default(""),
+  coverFile: text("cover_file").notNull().default(""),
+  status: text("status").notNull().default("published"), // draft | published
+  sort: integer("sort").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const galleryPhotos = pgTable("gallery_photos", {
+  id: serial("id").primaryKey(),
+  eventId: integer("event_id")
+    .notNull()
+    .references(() => galleryEvents.id, { onDelete: "cascade" }),
+  url: text("url").notNull(),
+  filePath: text("file_path").notNull().default(""),
+  width: integer("width"),
+  height: integer("height"),
+  size: integer("size"),
+  altEn: text("alt_en").notNull().default(""),
+  altBn: text("alt_bn").notNull().default(""),
+  captionEn: text("caption_en").notNull().default(""),
+  captionBn: text("caption_bn").notNull().default(""),
+  sort: integer("sort").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const inquiries = pgTable("inquiries", {
   id: serial("id").primaryKey(),
   data: jsonb("data").notNull(),

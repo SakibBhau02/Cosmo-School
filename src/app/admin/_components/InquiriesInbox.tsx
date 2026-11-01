@@ -107,7 +107,7 @@ export default function InquiriesInbox({
               className={`rounded-full px-3 py-1.5 text-xs font-bold capitalize transition ${
                 filter === key
                   ? "bg-pine-950 text-white"
-                  : "border border-pine-900/10 bg-white text-ink/60 hover:border-pine-900/25"
+                  : "border border-pine-900/10 bg-white text-ink/70 hover:border-pine-900/25"
               }`}
             >
               {key} · {counts[key]}
@@ -151,7 +151,7 @@ export default function InquiriesInbox({
                         </a>
                       )}
                     </p>
-                    <p className="mt-0.5 text-xs text-ink/50">
+                    <p className="mt-0.5 text-xs text-ink/65">
                       {[child && `Child: ${child}`, klass && `Class: ${klass}`]
                         .filter(Boolean)
                         .join(" · ") || "—"}
@@ -193,7 +193,7 @@ export default function InquiriesInbox({
                 {open && (
                   <div className="mt-3 space-y-3 border-t border-pine-900/10 pt-3">
                     {row.notes && !noteDraft && (
-                      <p className="rounded-lg bg-paper px-3 py-2 text-xs text-ink/60">{row.notes}</p>
+                      <p className="rounded-lg bg-paper px-3 py-2 text-xs text-ink/70">{row.notes}</p>
                     )}
                     <label className="block">
                       <Label>Internal note</Label>
@@ -215,7 +215,7 @@ export default function InquiriesInbox({
                         Delete
                       </Button>
                       {row.handledBy && (
-                        <span className="text-[11px] text-ink/40">handled by {row.handledBy}</span>
+                        <span className="text-[11px] text-ink/65">handled by {row.handledBy}</span>
                       )}
                     </div>
                   </div>

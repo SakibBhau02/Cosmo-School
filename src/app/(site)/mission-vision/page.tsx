@@ -1,8 +1,10 @@
 import MissionContent from "./content";
-import { missionPoints } from "@/config/site";
+import { getPublishedDoc } from "@/content/store";
+import type { MissionDoc } from "@/content/defaults/mission";
 
 export const metadata = { title: "মিশন ও ভিশন — Cosmo School Banasree" };
 
-export default function MissionPage() {
-  return <MissionContent missionPoints={missionPoints} />;
+export default async function MissionPage() {
+  const doc = await getPublishedDoc<MissionDoc>("mission");
+  return <MissionContent doc={doc} />;
 }

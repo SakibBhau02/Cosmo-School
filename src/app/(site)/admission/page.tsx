@@ -1,12 +1,14 @@
 import AdmissionContent from "./content";
-import { faqs as seedFaqs } from "@/config/site";
-import { getSiteContent } from "@/lib/cms";
+import { getGlobalContent, getPublishedDoc } from "@/content/store";
+import type { AdmissionDoc } from "@/content/defaults/admission";
 
 export const metadata = { title: "ভর্তি — Cosmo School Banasree" };
 
 export default async function AdmissionPage() {
-  const site = await getSiteContent().catch(() => null);
-  const faqs = site?.faqs?.length ? site.faqs : seedFaqs;
+  const [doc, global] = await Promise.all([
+    getPublishedDoc<AdmissionDoc>("admission"),
+    getGlobalContent(),
+  ]);
 
-  return <AdmissionContent faqs={faqs} />;
+  return <AdmissionContent doc={doc} contact={global.contact} />;
 }

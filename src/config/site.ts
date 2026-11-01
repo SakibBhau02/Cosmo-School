@@ -118,7 +118,7 @@ export const programs = [
   {
     titleBn: "প্রি-প্রাইমারি",
     titleEn: "Pre-Primary",
-    age: "Prep-I: 3-4 years, Prep-II: 4-5 years",
+    age: "Prep-I: 3+ years, Prep-II: 4+ years",
     descBn: "ভাষা, সংখ্যা ও সামাজিক দক্ষতার মজবুত ভিত্তি।",
     descEn: "Strong foundations in language, numbers & social skills.",
     img: "https://cosmoschools.org/image1.jpg",
@@ -333,11 +333,8 @@ export const admissionDocs = [
   "স্থানীয় অভিভাবকের (লোকাল গার্ডিয়ান) পাসপোর্ট সাইজ ছবি — ১ কপি",
 ];
 
-export const ageCriteria = [
-  { cls: "প্রি-স্কুল", age: "২+ বছর" },
-  { cls: "Prep I", age: "৩+ বছর" },
-  { cls: "১ম শ্রেণি", age: "৬+ বছর" },
-];
+// Age criteria live in the admission page content (admin → Admission → Age criteria),
+// so they can be updated without a code change.
 
 // ---- Guardian FAQ ----
 export const faqs = [
